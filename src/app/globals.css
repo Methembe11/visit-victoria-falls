@@ -3829,3 +3829,10 @@ body, button, input, select, textarea {
 
 /* Concierge answer provenance */
 .ai-concierge__answer-source{display:block;margin-top:7px;color:var(--color-muted,#77766f);font-size:10px;line-height:1.4;letter-spacing:.01em}
+
+
+/* White type is limited to titles inside photographic interior-page heroes. */
+.page-hero h1,
+.page-hero .page-hero__title {
+  color: #ffffff;
+}

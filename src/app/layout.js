@@ -1,4 +1,4 @@
-import { Instrument_Serif, Manrope } from "next/font/google";
+import { Manrope, Outfit } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import LenisScroll from "@/components/LenisScroll";
@@ -8,14 +8,13 @@ import AiConcierge from "@/components/AiConcierge";
 import { images } from "@/data/site";
 
 /*
- * Brand typography: Instrument Serif for editorial display, Manrope for body and interface.
+ * Brand typography: Outfit for headlines, Manrope for body and interface.
  * Both are open-source Google Fonts, self-hosted by next/font at build time.
  */
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -38,6 +37,11 @@ export const metadata = {
   description:
     "An independent guide to Victoria Falls, Zimbabwe — experiences, places to stay, restaurants, local businesses and practical travel planning.",
   applicationName: "Visit Victoria Falls",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
   keywords: [
     "Victoria Falls",
     "Zimbabwe travel",
@@ -83,7 +87,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${manrope.variable} h-full antialiased`}
+      className={`${outfit.variable} ${manrope.variable} h-full antialiased`}
     >
       <body>
         <a className="skip-link" href="#main">

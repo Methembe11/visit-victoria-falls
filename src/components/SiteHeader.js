@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { nav } from "@/data/site";
@@ -145,8 +146,14 @@ export default function SiteHeader() {
       >
         <div className="shell header__bar">
           <Link href="/" className="wordmark" aria-label="Visit Victoria Falls — home">
-            <span className="wordmark__name">Visit Victoria Falls</span>
-            <small>Victoria Falls · Zimbabwe</small>
+            <Image
+              src="/visit-victoria-falls-logo.png"
+              alt="Visit Victoria Falls"
+              width={150}
+              height={100}
+              priority
+              style={{ width: 156, height: 72, objectFit: "contain" }}
+            />
           </Link>
 
           <nav
@@ -247,9 +254,15 @@ export default function SiteHeader() {
       {mobileOpen && (
         <div className="mobile-panel" role="dialog" aria-modal="true" aria-label="Menu" ref={panelRef}>
           <div className="mobile-panel__top">
-            <Link href="/" className="wordmark" onClick={() => setMobileOpen(false)}>
-              <span className="wordmark__name">Visit Victoria Falls</span>
-              <small>Victoria Falls · Zimbabwe</small>
+            <Link href="/" className="wordmark" aria-label="Visit Victoria Falls — home" onClick={() => setMobileOpen(false)}>
+              <Image
+                src="/visit-victoria-falls-logo.png"
+                alt="Visit Victoria Falls"
+                width={150}
+                height={100}
+                priority
+                style={{ width: 156, height: 72, objectFit: "contain" }}
+              />
             </Link>
             <button
               ref={closeRef}
