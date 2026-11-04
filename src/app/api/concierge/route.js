@@ -125,12 +125,123 @@ async function store(question, answer) {
   } catch {}
 }
 
-function localReply(question) {
+function words(value) {
+  return String(value || "").toLowerCase().match(/[a-z0-9]+/g) || [];
+}
+
+function scoreMatch(question, item) {
+  const ignored = new Set(["what", "where", "when", "with", "from", "about", "tell", "show", "give", "help", "want", "need", "have", "does", "this", "that", "there", "they", "them", "your", "near", "falls", "victoria"]);
+  const terms = [...new Set(words(question).filter((word) => word.length > 2 && !ignored.has(word)))];
+  const haystack = words([item.title, item.name, item.category, item.type, item.area, item.blurb, item.summary, item.excerpt].join(" ")).join(" ");
+  return terms.reduce((total, term) => total + (haystack.includes(term) ? 1 : 0), 0);
+}
+
+function localKnowledgeReply(question) {
   const text = question.toLowerCase();
-  if (isRejectingOptions(question)) return "No problem — I won\x27t keep suggesting those. What kind of experience would you prefer instead: nature and wildlife, culture, food, relaxation, or something more adventurous?";
-  if (/\b(hello|hi|hey|good morning|good afternoon)\b/.test(text)) return "Hello, and welcome to Victoria Falls. I can help with the Falls themselves, experiences, places to stay, food, local culture and practical travel questions. What are you curious about?";
-  if (/\b(price|cost|availability|available|book|booking|open now)\b/.test(text)) return "Those details can change, and I can\x27t confirm live prices or availability here. Please check directly with the relevant provider before making plans.";
-  return "I can help explore Victoria Falls and the surrounding Zambezi region. I couldn\x27t reach the live research service just now, so I don\x27t want to guess. You can ask me about the Falls, seasons, activities, wildlife, travel logistics or local culture.";
+  if (isRejectingOptions(question)) {
+    return { reply: "No problem - I will not keep suggesting those. What kind of experience would you prefer instead: nature and wildlife, culture, food, relaxation, or something more adventurous?", recommendations: [], generatedBy: "rejection-handler" };
+  }
+  if (/\b(hello|hi|hey|good morning|good afternoon)\b/.test(text)) {
+    return { reply: "Hello, and welcome to Victoria Falls. I can help you explore experiences, accommodation, restaurants and practical travel information using the Visit Victoria Falls guide. What would you like to know?", recommendations: [], generatedBy: "local-knowledge" };
+  }
+
+  if (/wild\s*horizons/i.test(question)) {
+    return {
+      reply: "Wild Horizons is not currently included in the Visit Victoria Falls directory information available to me. Live web research is temporarily unavailable, so I do not want to guess about its current activities, prices, schedules or contact details. I can still help you understand the types of Victoria Falls experiences to compare, such as game drives, Zambezi cruises, helicopter flights and transfers. Which Wild Horizons service are you interested in?",
+      recommendations: [],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  const faq = (faqs || []).map((item) => ({ ...item, score: scoreMatch(question, { title: item.q, blurb: item.a }) }))
+    .sort((a, b) => b.score - a.score)[0];
+  if (faq && faq.score >= 3) {
+    return { reply: faq.a, recommendations: [], generatedBy: "local-knowledge" };
+  }
+
+  const experience = experiences.map((item) => ({ ...item, score: scoreMatch(question, item) }))
+    .sort((a, b) => b.score - a.score)[0];
+  if (experience && experience.score >= 2) {
+    const details = [
+      experience.summary,
+      experience.duration ? "Typical time: " + experience.duration + "." : "",
+      experience.area ? "Location: " + experience.area + "." : "",
+      experience.goodToKnow?.length ? "A few things to know: " + experience.goodToKnow.slice(0, 2).join(" ") : "",
+    ].filter(Boolean);
+    return {
+      reply: details.join("\n\n") + "\n\nConfirm current prices, availability and operating arrangements directly with the provider before making plans.",
+      recommendations: [{ title: experience.title, href: "/things-to-do/" + experience.slug }],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  const stay = stays.map((item) => ({ ...item, score: scoreMatch(question, item) })).sort((a, b) => b.score - a.score)[0];
+  if (stay && stay.score >= 2) {
+    return {
+      reply: stay.blurb + " It is in " + stay.area + ". " + stay.note,
+      recommendations: [{ title: stay.name, href: "/places-to-stay/" + stay.slug }],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  const restaurant = restaurants.map((item) => ({ ...item, score: scoreMatch(question, item) })).sort((a, b) => b.score - a.score)[0];
+  if (restaurant && restaurant.score >= 2) {
+    return {
+      reply: restaurant.blurb + " " + restaurant.note,
+      recommendations: [{ title: restaurant.name, href: "/restaurants/" + restaurant.slug }],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  if (/\b(wildlife|animals|safari|elephant|game drive|birds)\b/.test(text)) {
+    const items = experiences.filter((item) => /wildlife/i.test(item.category + " " + item.title + " " + item.blurb));
+    return {
+      reply: "For wildlife around Victoria Falls, the site guide covers guided game drives near town and safaris in Zambezi National Park. Sightings depend on the season, area and time of day, and are never guaranteed. Early morning and late afternoon are common times for game drives. Confirm the route, fees and inclusions with the operator.",
+      recommendations: items.slice(0, 3).map((item) => ({ title: item.title, href: "/things-to-do/" + item.slug })),
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  if (/\b(season|weather|rain|water level|high water|low water)\b/.test(text)) {
+    const guide = guides.find((item) => item.slug === "complete-guide-to-victoria-falls");
+    return {
+      reply: "The experience of the Falls changes with the Zambezi's water level. At high water, spray can be intense and paths may be wet; at lower water, more of the rock face is visible. Conditions vary through the year, so check current local conditions before travelling. " + (guide?.excerpt || ""),
+      recommendations: guide ? [{ title: guide.title, href: "/guides/" + guide.slug }] : [],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  if (/\b(visa|passport|border|zambia|zimbabwe side)\b/.test(text)) {
+    const item = faqs.find((entry) => /side of victoria falls/i.test(entry.q));
+    return {
+      reply: item?.a || "Border and visa requirements depend on your nationality and route. Check official immigration sources before travelling and carry your passport when crossing between Zimbabwe and Zambia.",
+      recommendations: [],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  if (/\b(price|cost|availability|available|book|booking|open now|opening hours)\b/.test(text)) {
+    return {
+      reply: "I can explain what an experience includes, but this guide does not provide live prices, availability or confirmed opening hours. Those details are set by each provider and can change. Please confirm the total price, inclusions, date and time directly before paying.",
+      recommendations: [],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  const best = catalogue.map((item) => ({ ...item, score: scoreMatch(question, item) })).sort((a, b) => b.score - a.score)[0];
+  if (best && best.score >= 2) {
+    return {
+      reply: best.description + " I can share more about what to expect, but current prices and availability need to be confirmed with the provider.",
+      recommendations: [{ title: best.title, href: best.href }],
+      generatedBy: "local-knowledge",
+    };
+  }
+
+  return {
+    reply: "I can still help using the destination information built into this guide, but live AI research is temporarily unavailable. Try asking about the rainforest and Falls viewpoints, game drives, Zambezi cruises, places to stay, restaurants, border planning or how long to spend in Victoria Falls. I won't invent details that I can't verify.",
+    recommendations: [],
+    generatedBy: "local-fallback",
+  };
 }
 
 export async function POST(request) {
@@ -147,19 +258,20 @@ export async function POST(request) {
     recommendations: Array.isArray(item?.recommendations) ? item.recommendations.slice(0, 5) : [],
   })) : [];
   if (isRejectingOptions(question)) {
-    const reply = "No problem — those suggestions clearly weren\x27t what you had in mind. What would you prefer instead: wildlife and nature, adventure, culture, food, relaxation, or something else?";
+    const reply = "No problem - those suggestions clearly weren't what you had in mind. What would you prefer instead: wildlife and nature, adventure, culture, food, relaxation, or something else?";
     await store(question, reply);
     return NextResponse.json({ reply, recommendations: [], citations: [], generatedBy: "rejection-handler" });
   }
   let result = null;
-  let generatedBy = "local";
   if (process.env.OPENAI_API_KEY) {
-    try { result = await askAI(question, history); generatedBy = "openai-web"; } catch (error) {
+    try { result = await askAI(question, history); } catch (error) {
       console.error("[concierge] Live research failed:", error.message);
     }
   }
-  const reply = result?.reply || localReply(question);
-  const recommendations = result ? relevantRecommendations(question, reply, history) : [];
+  const local = result ? null : localKnowledgeReply(question);
+  const reply = result?.reply || local.reply;
+  const recommendations = result ? relevantRecommendations(question, reply, history) : local.recommendations;
+  const generatedBy = result ? "openai-web" : local.generatedBy;
   await store(question, reply);
   return NextResponse.json({ reply, recommendations, citations: result?.citations || [], generatedBy });
 }

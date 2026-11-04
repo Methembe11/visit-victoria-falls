@@ -48,6 +48,7 @@ export default function AiConcierge() {
         content: data.reply,
         recommendations: data.recommendations || [],
         citations: data.citations || [],
+        generatedBy: data.generatedBy || "openai-web",
       }]);
     } catch (err) {
       setError(err.message || "Please try again.");
@@ -71,6 +72,15 @@ export default function AiConcierge() {
             {messages.map((item, index) => (
               <div className={`ai-concierge__message ai-concierge__message--${item.role}`} key={index}>
                 <p>{item.content}</p>
+                {item.role === "assistant" && item.generatedBy === "local-knowledge" && (
+                  <small className="ai-concierge__answer-source">From the Visit Victoria Falls destination guide</small>
+                )}
+                {item.role === "assistant" && item.generatedBy === "local-fallback" && (
+                  <small className="ai-concierge__answer-source">Local guidance · live AI research temporarily unavailable</small>
+                )}
+                {item.role === "assistant" && item.generatedBy === "openai-web" && (
+                  <small className="ai-concierge__answer-source">AI-assisted response</small>
+                )}
                 {item.citations?.length > 0 && (
                   <div className="ai-concierge__citations">
                     <small>Sources</small>
