@@ -1,69 +1,578 @@
 import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import {
+  site,
+  experiences,
+  stays,
+  restaurants,
+  guides,
+  interests,
+  itineraries,
+  images,
+} from "@/data/site";
+import VideoHero from "@/components/VideoHero";
+import PolaroidLineCarousel from "@/components/ui/polaroid-line-carousel";
+import Reveal from "@/components/Reveal";
+import styles from "./home.module.css";
 
-export default function Home() {
+const pickExperience = (slug) => experiences.find((item) => item.slug === slug);
+const pickStay = (slug) => stays.find((item) => item.slug === slug);
+const pickGuide = (slug) => guides.find((item) => item.slug === slug);
+const pickInterest = (slug) => interests.find((item) => item.slug === slug);
+
+const popular = [
+  "helicopter-flights",
+  "zambezi-sunset-cruise",
+  "rainforest-walk",
+  "game-drive",
+]
+  .map(pickExperience)
+  .filter(Boolean);
+
+const exploreCategories = [
+  {
+    name: "Adventure",
+    text: "Flights, bungee and the gorge.",
+    href: "/interests/adventure",
+    image: pickInterest("adventure")?.image ?? images.themeAdventure,
+  },
+  {
+    name: "Nature & wildlife",
+    text: "Rainforest, river and the national park.",
+    href: "/interests/wildlife",
+    image: pickInterest("wildlife")?.image ?? images.themeNature,
+  },
+  {
+    name: "Zambezi River",
+    text: "Cruises, sunsets and time on the water.",
+    href: "/things-to-do?category=River",
+    image: images.sunsetCruise,
+  },
+  {
+    name: "Culture & heritage",
+    text: "Local life, history and the bridge.",
+    href: "/interests/culture",
+    image: pickInterest("culture")?.image ?? images.themeCulture,
+  },
+  {
+    name: "Relaxation",
+    text: "Quiet lodges and unhurried days.",
+    href: "/interests/relaxation",
+    image: pickInterest("relaxation")?.image ?? images.themeWellness,
+  },
+];
+
+const featuredStays = [
+  "victoria-falls-river-lodge",
+  "parrot-lodge",
+  "the-victorian-manor",
+  "the-gray-luxury-apartments",
+]
+  .map(pickStay)
+  .filter(Boolean);
+
+const moreFeature = pickExperience("chobe-day-trip");
+const moreExperiences = [
+  "devils-pool",
+  "community-safari",
+  "dinner-cruise",
+  "bridge-walk",
+]
+  .map(pickExperience)
+  .filter(Boolean);
+
+const featuredGuides = [
+  "complete-guide-to-victoria-falls",
+  "when-to-visit",
+  "helicopter-tours",
+]
+  .map(pickGuide)
+  .filter(Boolean);
+
+const businessGroups = [
+  {
+    title: "Places to stay",
+    count: stays.length,
+    href: "/places-to-stay",
+    text: "Lodges, guesthouses, boutique properties and apartments.",
+    items: featuredStays.slice(0, 3).map((stay) => stay.name),
+  },
+  {
+    title: "Restaurants & cafés",
+    count: restaurants.length,
+    href: "/restaurants",
+    text: "From gorge-side lunches to informal town grills.",
+    items: restaurants.slice(0, 3).map((restaurant) => restaurant.name),
+  },
+  {
+    title: "Experiences & operators",
+    count: experiences.length,
+    href: "/things-to-do",
+    text: "Flights, cruises, guided walks, safaris and transfers.",
+    items: popular.slice(0, 3).map((experience) => experience.title),
+  },
+];
+
+const visitorLinks = [
+  { label: "Getting here", href: "/travel#getting-here" },
+  { label: "Airport transfers", href: "/travel#transfers" },
+  { label: "Visa & border", href: "/travel#border" },
+  { label: "Getting around", href: "/travel#getting-around" },
+  { label: "When to visit", href: "/guides/when-to-visit" },
+  { label: "Frequently asked questions", href: "/faq" },
+];
+
+const exampleItinerary = itineraries.find((item) => item.slug === "four-days") ?? itineraries[0];
+
+export default function HomePage() {
+  const [feature, ...popularRows] = popular;
+
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.js</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      {/* 01 — Cinematic scroll-locked video hero */}
+      <VideoHero />
+
+      {/* 02 — Popular experiences */}
+      <section className={styles.section} aria-labelledby="popular-heading">
+        <div className="shell">
+          <Reveal className={styles.sectionHead}>
+            <div className={styles.sectionHeadCopy}>
+              <span className={styles.kicker}>Popular experiences</span>
+              <h2 id="popular-heading" className={styles.title}>
+                Start with the ones people come for.
+              </h2>
+            </div>
+            <p className={styles.sectionHeadText}>
+              Four ways into the destination — from the air, on the water, on foot and in the bush.
+              Each listing explains what to expect and what to confirm before you book.
+            </p>
+          </Reveal>
+
+          {feature && (
+            <div className={styles.popularGrid}>
+              <Link
+                href={`/things-to-do/${feature.slug}`}
+                className={styles.featureCard}
+                data-track="listing_click"
+                data-track-label={feature.title}
+              >
+                <Image
+                  src={feature.image}
+                  alt={feature.title}
+                  fill
+                  sizes="(max-width: 960px) 100vw, 960px"
+                  className={styles.featureCardMedia}
+                />
+                <span className={styles.featureCardBody}>
+                  <span className={styles.cardKicker}>
+                    {feature.category} · {feature.duration}
+                  </span>
+                  <span className={styles.featureCardTitle}>{feature.title}</span>
+                  <span className={styles.featureCardText}>{feature.blurb}</span>
+                  <span className={styles.cardCta}>
+                    View experience <span aria-hidden="true">↗</span>
+                  </span>
+                </span>
+              </Link>
+
+              <div className={styles.popularList}>
+                {popularRows.map((experience) => (
+                  <Link
+                    key={experience.slug}
+                    href={`/things-to-do/${experience.slug}`}
+                    className={styles.popularRow}
+                    data-track="listing_click"
+                    data-track-label={experience.title}
+                  >
+                    <span className={styles.popularRowMedia}>
+                      <Image
+                        src={experience.image}
+                        alt={experience.title}
+                        fill
+                        sizes="(max-width: 620px) 144px, 192px"
+                      />
+                    </span>
+                    <span className={styles.popularRowBody}>
+                      <span className={styles.popularRowMeta}>
+                        {experience.category} · {experience.duration}
+                      </span>
+                      <span className={styles.popularRowTitle}>{experience.title}</span>
+                      <span className={styles.popularRowText}>{experience.blurb}</span>
+                    </span>
+                  </Link>
+                ))}
+
+                <Link href="/things-to-do" className={styles.popularAll}>
+                  All {experiences.length} experiences
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* 03 — Explore Victoria Falls */}
+      <section className={`${styles.section} ${styles.sectionSage}`} aria-labelledby="explore-heading">
+        <div className="shell">
+          <Reveal className={styles.sectionHead}>
+            <div className={styles.sectionHeadCopy}>
+              <span className={styles.kicker}>Explore Victoria Falls</span>
+              <h2 id="explore-heading" className={styles.title}>
+                Or follow your own idea of a good day.
+              </h2>
+            </div>
+            <p className={styles.sectionHeadText}>
+              Five routes into the destination, from the sound of the gorge to a quiet afternoon
+              on the river. Choose the one that sounds like your trip.
+            </p>
+          </Reveal>
+
+          <PolaroidLineCarousel
+            slides={exploreCategories.map((c) => ({
+              image: c.image,
+              title: c.name,
+              caption: c.text,
+              alt: `${c.name} in Victoria Falls`,
+            }))}
+            height="80vh"
+            cardWidth={320}
+            sag={36}
+            swing={1}
+            autoplay={0}
+            string="#8a7f72"
+            background="#F5F1E8"
+            ink="#263F32"
+            ariaLabel="Explore routes"
+          />
         </div>
-      </main>
+      </section>
+
+      {/* 04 — Places to stay */}
+      <section className={styles.section} aria-labelledby="stay-heading">
+        <div className="shell">
+          <div className={styles.stayLayout}>
+            <Reveal className={styles.stayIntro}>
+              <span className={styles.kicker}>Places to stay</span>
+              <h2 id="stay-heading" className={styles.title}>
+                A base for the kind of trip you are taking.
+              </h2>
+              <p className={styles.stayIntroCopy}>
+                Riverside lodges trade convenience for quiet. Town guesthouses put restaurants and
+                transfers within walking distance. We list both, with what each is good for.
+              </p>
+              <div className={styles.stayFilters} aria-label="Filter places to stay by type">
+                {["Lodge", "Guesthouse", "Boutique", "Apartment"].map((type) => (
+                  <Link
+                    key={type}
+                    href={`/places-to-stay?type=${type}`}
+                    className={styles.stayFilter}
+                  >
+                    {type}
+                  </Link>
+                ))}
+              </div>
+              <p className={styles.note}>
+                Rates, availability and inclusions are set by each property.
+              </p>
+              <Link href="/places-to-stay" className={styles.textLink}>
+                All {stays.length} places to stay <span aria-hidden="true">→</span>
+              </Link>
+            </Reveal>
+
+            <div className={styles.stayGrid}>
+              {featuredStays.map((stay) => (
+                <Link
+                  key={stay.slug}
+                  href={`/places-to-stay/${stay.slug}`}
+                  className={styles.stayCard}
+                  data-track="listing_click"
+                  data-track-label={stay.name}
+                >
+                  <span className={styles.stayMedia}>
+                    <Image
+                      src={stay.image}
+                      alt={stay.name}
+                      fill
+                      sizes="(max-width: 720px) 192px, (max-width: 960px) 50vw, 26vw"
+                    />
+                  </span>
+                  <span className={styles.stayBody}>
+                    <span className={styles.stayMeta}>
+                      {stay.type} · {stay.area}
+                    </span>
+                    <span className={styles.stayName}>{stay.name}</span>
+                    <span className={styles.stayText}>{stay.blurb}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 — More things to do */}
+      <section className={`${styles.section} ${styles.sectionSand}`} aria-labelledby="more-heading">
+        <div className="shell">
+          <Reveal className={styles.sectionHead}>
+            <div className={styles.sectionHeadCopy}>
+              <span className={styles.kicker}>More things to do</span>
+              <h2 id="more-heading" className={styles.title}>
+                Beyond the headline experiences.
+              </h2>
+            </div>
+            <p className={styles.sectionHeadText}>
+              A day trip across the border, a morning with a community guide, dinner on the river,
+              or a walk along the bridge. The trip gets better when you look past the first page.
+            </p>
+          </Reveal>
+
+          <div className={styles.moreLayout}>
+            {moreFeature && (
+              <Link
+                href={`/things-to-do/${moreFeature.slug}`}
+                className={styles.moreFeature}
+                data-track="listing_click"
+                data-track-label={moreFeature.title}
+              >
+                <Image
+                  src={moreFeature.image}
+                  alt={moreFeature.title}
+                  fill
+                  sizes="(max-width: 960px) 100vw, 55vw"
+                  className={styles.moreFeatureMedia}
+                />
+                <span className={styles.moreFeatureBody}>
+                  <span className={styles.cardKicker}>
+                    {moreFeature.category} · {moreFeature.duration}
+                  </span>
+                  <span className={styles.moreFeatureTitle}>{moreFeature.title}</span>
+                  <span className={styles.moreFeatureText}>{moreFeature.blurb}</span>
+                </span>
+              </Link>
+            )}
+
+            <div>
+              <div className={styles.moreList}>
+                {moreExperiences.map((experience, index) => (
+                  <Link
+                    key={experience.slug}
+                    href={`/things-to-do/${experience.slug}`}
+                    className={styles.moreRow}
+                    data-track="listing_click"
+                    data-track-label={experience.title}
+                  >
+                    <span className={styles.moreIndex}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>
+                      <span className={styles.moreRowTitle}>{experience.title}</span>
+                      <span className={styles.moreRowMeta}>
+                        {experience.category} · {experience.duration}
+                      </span>
+                    </span>
+                    <span className={styles.moreArrow} aria-hidden="true">
+                      →
+                    </span>
+                  </Link>
+                ))}
+              </div>
+              <div className={styles.moreFooter}>
+                <Link href="/things-to-do" className={styles.textLink}>
+                  Browse all {experiences.length} experiences <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 — AI trip planner */}
+      <section
+        className={`${styles.section} ${styles.sectionDark}`}
+        aria-labelledby="planner-heading"
+      >
+        <div className="shell">
+          <div className={styles.plannerLayout}>
+            <Reveal className={styles.plannerCopy}>
+              <span className={`${styles.kicker} ${styles.kickerLight}`}>AI trip planner</span>
+              <h2 id="planner-heading" className={`${styles.title} ${styles.titleLight}`}>
+                Tell us the shape of your trip.
+              </h2>
+              <p className={styles.plannerCopyText}>
+                A suggested outline built from the destination information on this site — your
+                month, pace, budget and interests. Use it as a starting point, then confirm the
+                details with the providers you choose.
+              </p>
+              <div className={styles.plannerActions}>
+                <Link href="/plan" className={`btn ${styles.plannerPrimary}`}>
+                  Open the trip planner
+                </Link>
+                <Link href="/itineraries" className={`${styles.textLink} ${styles.textLinkLight}`}>
+                  Browse itineraries <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <p className={styles.plannerNote}>
+                A planning aid, not a booking. Prices, availability and terms are set by providers.
+              </p>
+            </Reveal>
+
+            {exampleItinerary && (
+              <div className={styles.plannerPanel}>
+                <div className={styles.plannerPanelHead}>
+                  <span>Example outline</span>
+                  <span>{exampleItinerary.duration}</span>
+                </div>
+                <h3 className={styles.plannerPanelTitle}>{exampleItinerary.name}</h3>
+                <p className={styles.plannerPanelText}>{exampleItinerary.summary}</p>
+                <ol className={styles.plannerDays}>
+                  {exampleItinerary.days.map((day) => (
+                    <li key={day.day}>
+                      <span className={styles.plannerDay}>Day {day.day}</span>
+                      <span>
+                        <span className={styles.plannerDayTitle}>{day.title}</span>
+                        <span className={styles.plannerDayItems}>{day.items.join(" · ")}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+                <p className={styles.plannerPanelNote}>
+                  Example only. The planner builds a fresh outline from your input.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 07 — Travel guides */}
+      <section className={styles.section} aria-labelledby="guides-heading">
+        <div className="shell">
+          <Reveal className={styles.sectionHead}>
+            <div className={styles.sectionHeadCopy}>
+              <span className={styles.kicker}>Travel guides</span>
+              <h2 id="guides-heading" className={styles.title}>
+                Read before you book the flights.
+              </h2>
+            </div>
+            <Link href="/guides" className={styles.textLink}>
+              All {guides.length} guides <span aria-hidden="true">→</span>
+            </Link>
+          </Reveal>
+
+          <div className={styles.guidesGrid}>
+            {featuredGuides.map((guide) => (
+              <Link key={guide.slug} href={`/guides/${guide.slug}`} className={styles.guideCard}>
+                <span className={styles.guideMedia}>
+                  <Image
+                    src={guide.image}
+                    alt={guide.title}
+                    fill
+                    sizes="(max-width: 720px) 176px, (max-width: 960px) 50vw, 33vw"
+                  />
+                </span>
+                <span className={styles.guideBody}>
+                  <span className={styles.guideMeta}>
+                    {guide.category} · {guide.readTime}
+                  </span>
+                  <span className={styles.guideTitle}>{guide.title}</span>
+                  <span className={styles.guideText}>{guide.excerpt}</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className={styles.guideFoot}>
+            <span className={styles.guideFootText}>
+              Arriving, visas, transfers and what to pack.
+            </span>
+            <Link href="/travel" className={styles.textLink}>
+              Practical travel information <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 08 — Local businesses */}
+      <section className={styles.section} aria-labelledby="business-heading">
+        <div className="shell">
+          <div className={styles.bizHead}>
+            <div className={styles.bizHeadCopy}>
+              <span className={styles.kicker}>Local businesses</span>
+              <h2 id="business-heading" className={styles.title}>
+                The people who make the place work.
+              </h2>
+            </div>
+            <p className={styles.sectionHeadText}>
+              A directory of stays, kitchens and operators. Listings are grouped by what they are —
+              not ranked by who paid.
+            </p>
+          </div>
+
+          <div className={styles.bizGrid}>
+            {businessGroups.map((group) => (
+              <div key={group.href} className={styles.bizCard}>
+                <span className={styles.bizCount}>{String(group.count).padStart(2, "0")}</span>
+                <h3 className={styles.bizTitle}>{group.title}</h3>
+                <p className={styles.bizText}>{group.text}</p>
+                <ul className={styles.bizList}>
+                  {group.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <Link href={group.href} className={styles.bizLink}>
+                  View the listings →
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.bizFoot}>
+            <span className={styles.bizFootText}>
+              The directory covers stays, kitchens and operators across Victoria Falls.
+            </span>
+            <Link href="/businesses" className={styles.textLink}>
+              The full directory <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 09 — Visitor information */}
+      <section
+        className={`${styles.section} ${styles.sectionSage}`}
+        aria-labelledby="visitor-heading"
+      >
+        <div className="shell">
+          <div className={styles.visitorLayout}>
+            <Reveal className={styles.visitorCopy}>
+              <span className={styles.kicker}>Visitor information</span>
+              <h2 id="visitor-heading" className={styles.title}>
+                The practical bits, in one place.
+              </h2>
+              <p className={styles.visitorText}>
+                Airport transfers, border formalities, getting around and the questions worth
+                answering before you travel.
+              </p>
+              <a href={`mailto:${site.email}`} className={styles.visitorEmail}>
+                {site.email}
+              </a>
+              <p className={styles.visitorReview}>
+                Reviewed {site.lastReviewed} · {site.location}
+              </p>
+            </Reveal>
+
+            <div className={styles.visitorLinks}>
+              {visitorLinks.map((link) => (
+                <Link key={link.href} href={link.href} className={styles.visitorLink}>
+                  <span>{link.label}</span>
+                  <span aria-hidden="true">↗</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

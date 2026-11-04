@@ -1,0 +1,181 @@
+.scrollSection {
+  --hero-progress: 0;
+  position: relative;
+  height: 165svh;
+  background: #000;
+  color: #fff;
+}
+.stickyFrame {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 620px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #17251e url("/hero-poster.jpg") center / cover no-repeat;
+}
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: auto;
+}
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.66) 0%, rgba(0,0,0,.32) 48%, rgba(0,0,0,.08) 100%),
+    linear-gradient(0deg, rgba(0,0,0,.5), transparent 34%, rgba(0,0,0,.18));
+  pointer-events: none;
+}
+.content {
+  position: absolute;
+  z-index: 1;
+  top: 48%;
+  left: max(6vw, calc((100vw - 1440px) / 2));
+  width: min(760px, 78vw);
+  transform: translateY(-48%);
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 22px;
+  color: #D4C3A9;
+  font: 500 11px/1.4 var(--font-manrope), sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.eyebrow::before { content: ""; width: 34px; height: 1px; background: currentColor; }
+.title {
+  color: #fff;
+  font-family: var(--font-instrument), "Instrument Serif", Georgia, serif;
+  font-size: clamp(4.25rem, 8.3vw, 8rem);
+  font-weight: 400;
+  line-height: .88;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+  opacity: calc(1 - var(--hero-progress) * .9);
+  filter: blur(calc(var(--hero-progress) * 12px));
+  transform: translate3d(0, calc(var(--hero-progress) * -16px), 0);
+  transform-origin: left center;
+  will-change: opacity, filter, transform;
+}
+.title em { color: #F5F1E8; font-weight: 400; }
+.description {
+  max-width: 48ch;
+  margin-top: 24px;
+  color: rgba(255,255,255,.88);
+  font: 400 clamp(14px, 1.05vw, 16px)/1.75 var(--font-manrope), sans-serif;
+  opacity: calc(1 - var(--hero-progress) * .65);
+}
+.search {
+  max-width: 650px;
+  margin-top: 24px;
+  opacity: calc(1 - var(--hero-progress) * .9);
+  transform: translate3d(0, calc(var(--hero-progress) * -8px), 0);
+  transition: opacity 80ms linear;
+  padding: 15px 17px 17px;
+  background: rgba(245,241,232,.97);
+  color: #000;
+}
+.searchLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: #263F32;
+  font: 500 10px/1.4 var(--font-manrope), sans-serif;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.searchControls { display: flex; gap: 10px; }
+.searchControls input {
+  min-width: 0;
+  flex: 1;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(38,63,50,.28);
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font: 400 13px/1.4 var(--font-manrope), sans-serif;
+}
+.searchControls input:focus-visible { outline: 2px solid #263F32; outline-offset: 2px; }
+.searchControls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 18px;
+  background: #263F32;
+  color: #fff;
+  font: 500 10px/1 var(--font-manrope), sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: background .2s ease;
+}
+.searchControls button:hover { background: #1D3027; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 24px; opacity: calc(1 - var(--hero-progress) * .9); transform: translate3d(0, calc(var(--hero-progress) * -8px), 0); }
+.primary, .secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font: 500 10px/1 var(--font-manrope), sans-serif;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.primary { gap: 18px; padding: 0 20px; background: #F5F1E8; color: #263F32; border: 1px solid #F5F1E8; }
+.primary:hover { background: #D4C3A9; border-color: #D4C3A9; }
+.secondary { color: #fff; border-bottom: 1px solid rgba(255,255,255,.65); }
+.secondary:hover { color: #D4C3A9; border-color: #D4C3A9; }
+.bottomLine {
+  position: absolute;
+  z-index: 1;
+  right: max(6vw, calc((100vw - 1440px) / 2));
+  bottom: 28px;
+  left: max(6vw, calc((100vw - 1440px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgba(255,255,255,.72);
+  font: 500 9px/1.4 var(--font-manrope), sans-serif;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.scrollCue { display: inline-flex; align-items: center; gap: 12px; }
+.scrollCue i { display: block; width: 30px; height: 1px; background: #D4C3A9; }
+@media (max-width: 1080px) {
+  .content { width: min(700px, 86vw); }
+  .title { font-size: clamp(4rem, 9vw, 6.5rem); }
+}
+@media (max-width: 700px) {
+  .scrollSection { height: auto; min-height: 0; }
+  .stickyFrame { position: relative; min-height: max(760px, calc(100svh - 72px)); height: auto; }
+  .video { object-position: 58% center; }
+  .scrim { background: linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.2)), linear-gradient(0deg, rgba(0,0,0,.62), transparent 58%); }
+  .content { position: relative; top: auto; left: auto; width: auto; transform: none; padding: 100px 24px 108px; }
+  .title { font-size: clamp(3.7rem, 15vw, 5.5rem); opacity: 1; filter: none; transform: none; }
+  .description { margin-top: 20px; font-size: 14px; opacity: 1; }
+  .search { margin-top: 22px; padding: 14px; opacity: 1; transform: none; }
+  .actions { opacity: 1; transform: none; }
+  .searchControls { flex-direction: column; }
+  .searchControls button { width: 100%; }
+  .actions { align-items: flex-start; gap: 16px; margin-top: 22px; }
+  .bottomLine { right: 24px; bottom: 20px; left: 24px; }
+  .bottomLine > span:first-child { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scrollSection { height: auto; }
+  .stickyFrame { position: relative; }
+  .video { display: none; }
+  .title, .description { opacity: 1; filter: none; transform: none; }
+  .scrim { background: linear-gradient(90deg, rgba(0,0,0,.68), rgba(0,0,0,.3)), url("/hero-poster.jpg") center/cover; }
+  .searchControls button, .primary, .secondary { transition: none; }
+}
