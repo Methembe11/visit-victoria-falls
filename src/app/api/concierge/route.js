@@ -26,7 +26,7 @@ function destinationKnowledge() {
 }
 
 function isRejectingOptions(message) {
-  return /\b(i\s+)?(dont|don\x27t|do not|didnt|didn\x27t)\s+(want|like|need)\s+(those|these|them|that)\b|\bnot interested\b|\bnone of those\b|\btry something else\b/i.test(message);
+  return /\b(i\s+)?(dont|don\x27t|do not|didnt|didn\x27t)\s+(want|like|need)\s+(those|these|them|that)\b|\bnot interested\b|\bnone of those\b|\bnot what (i|we) (want|wanted|mean|meant)\b|\b(those|these) (aren\x27t|are not) (for me|what i want)\b|\btry something else\b|\bsomething different\b|\bdifferent suggestions\b/i.test(message);
 }
 
 function relevantRecommendations(question, reply, history) {
@@ -146,6 +146,11 @@ export async function POST(request) {
     content: clean(item?.content, 1200),
     recommendations: Array.isArray(item?.recommendations) ? item.recommendations.slice(0, 5) : [],
   })) : [];
+  if (isRejectingOptions(question)) {
+    const reply = "No problem — those suggestions clearly weren\x27t what you had in mind. What would you prefer instead: wildlife and nature, adventure, culture, food, relaxation, or something else?";
+    await store(question, reply);
+    return NextResponse.json({ reply, recommendations: [], citations: [], generatedBy: "rejection-handler" });
+  }
   let result = null;
   let generatedBy = "local";
   if (process.env.OPENAI_API_KEY) {
