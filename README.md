@@ -111,18 +111,9 @@ All three are `POST` only, JSON in, JSON out, and rate limited per IP.
 
 ## Local data and analytics
 
-`.data/` holds append-only JSONL written at runtime:
+Production enquiries are delivered through Formspree and archived in Supabase. Analytics events are stored in Supabase. The Studio dashboard reads both datasets from Supabase. The legacy JSONL helper remains in the repository but is not used by these production routes.
 
-- `.data/events.jsonl` — page views and interaction events
-- `.data/enquiries.jsonl` — submitted enquiries
-
-Read them at `/studio?key=<STUDIO_KEY>`.
-
-**This is local-only persistence.** On a serverless host the filesystem is read-only or ephemeral,
-so both files will fail to write or disappear between deploys. Before going live on Vercel,
-replace `src/lib/store.js` with a real store (KV, Postgres, or forward enquiries by email).
-
-`.data/` is gitignored and is not deployed.
+See [AI integration, analytics and enquiry handling](docs/AI-INTEGRATION-AND-LIMITATIONS.md) for the current implementation, fallback behaviour, limitations, data flow and demonstration guidance.
 
 ## Conventions
 
@@ -185,3 +176,13 @@ editorial listings.
 The existing trip planner posts to `/api/plan`; the floating concierge posts to
 `/api/concierge`. Both use the server-side OpenAI key and have local fallbacks. Never commit
 `.env.local`; use `.env.example` as the configuration template.
+
+
+## Current production data flow
+
+- **Enquiries:** POST /api/enquiry validates submissions, forwards accepted messages to Formspree (https://formspree.io/f/mjyyjejk), and attempts to archive them in the private Supabase enquiries table.
+- **Analytics:** POST /api/track validates allowlisted events and stores them in the private Supabase analytics_events table. The global AnalyticsProvider sends page views and marked interaction clicks.
+- **Studio:** /studio?key=STUDIO_KEY reads analytics and enquiry records from Supabase. Keep STUDIO_KEY and SUPABASE_SERVICE_ROLE_KEY private.
+- **AI documentation:** See docs/AI-INTEGRATION-AND-LIMITATIONS.md.
+
+Formspree acceptance is the primary enquiry-delivery confirmation; the Supabase copy is an additional private archive. The Supabase service-role key is accessed only by server-side code.
