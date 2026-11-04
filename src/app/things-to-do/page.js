@@ -3,6 +3,7 @@ import { experiences, images } from "@/data/site";
 import PageHero from "@/components/PageHero";
 import ListingCard from "@/components/ListingCard";
 import Reveal from "@/components/Reveal";
+import JourneyPathways from "@/components/JourneyPathways";
 
 export const metadata = {
   title: "Things to do",
@@ -98,6 +99,7 @@ export default async function ThingsToDoPage({ searchParams }) {
           </Reveal>
         </div>
       </section>
+      <JourneyPathways current="Experiences" />
     </>
   );
 }

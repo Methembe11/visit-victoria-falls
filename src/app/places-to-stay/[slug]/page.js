@@ -4,6 +4,7 @@ import { stays } from "@/data/site";
 import PageHero from "@/components/PageHero";
 import ListingCard from "@/components/ListingCard";
 import Reveal from "@/components/Reveal";
+import ReferralPanel from "@/components/ReferralPanel";
 
 export function generateStaticParams() {
   return stays.map((stay) => ({ slug: stay.slug }));
@@ -87,24 +88,13 @@ export default async function StayPage({ params }) {
         </div>
 
         <aside className="aside-card">
-          <span className="eyebrow">Ask about this stay</span>
-          <h3>Need a starting point?</h3>
-          <p>
-            Tell us what matters — quiet, walkability, family space, a river view — and we will point you
-            toward the listings that fit. We cannot check availability or hold a room.
-          </p>
-          <Link
-            href={`/contact?topic=Accommodation&listing=${encodeURIComponent(stay.name)}`}
-            className="btn btn--solid"
-          >
-            Send an enquiry
-          </Link>
+          <ReferralPanel type="accommodation" slug={stay.slug} name={stay.name} enquiryHref={`/contact?topic=Accommodation&listing=${encodeURIComponent(stay.name)}`} />
           <Link href="/places-to-stay" className="btn btn--ghost">Compare all stays</Link>
           <dl className="aside-card__meta">
             <div><dt>Type</dt><dd>{stay.type}</dd></div>
             <div><dt>Area</dt><dd>{stay.area}</dd></div>
-            <div><dt>Booking</dt><dd>With property</dd></div>
-            <div><dt>Payment</dt><dd>Not via this site</dd></div>
+            <div><dt>Booking</dt><dd>Direct with provider</dd></div>
+            <div><dt>Payment</dt><dd>On provider website</dd></div>
           </dl>
         </aside>
       </div>

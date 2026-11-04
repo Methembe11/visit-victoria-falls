@@ -2,6 +2,7 @@ import Link from "next/link";
 import { images } from "@/data/site";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
+import JourneyPathways from "@/components/JourneyPathways";
 
 export const metadata = {
   title: "Travel information",
@@ -249,6 +250,7 @@ export default function TravelPage() {
           </div>
         </div>
       </section>
+      <JourneyPathways current="Travel" />
     </>
   );
 }

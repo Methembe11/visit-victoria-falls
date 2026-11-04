@@ -62,6 +62,7 @@ export default function BusinessesPage() {
               <p className="micro">
                 {stays.length + restaurants.length + experiences.length} listings · Corrections welcome
               </p>
+              <Link href="/partners" className="link-arrow" style={{ marginTop: 16 }}>Explore our operator partnership proposal</Link>
             </div>
           </Reveal>
 

@@ -3,6 +3,7 @@ import { experiences, guides, stays, restaurants, itineraries, images } from "@/
 import PageHero from "@/components/PageHero";
 import ListingCard from "@/components/ListingCard";
 import Reveal from "@/components/Reveal";
+import JourneyPathways from "@/components/JourneyPathways";
 
 export const metadata = {
   title: "Explore Victoria Falls",
@@ -173,6 +174,7 @@ export default function ExplorePage() {
           </div>
         </div>
       </section>
+      <JourneyPathways current="Explore" />
     </>
   );
 }

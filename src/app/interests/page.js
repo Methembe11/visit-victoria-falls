@@ -3,6 +3,7 @@ import { interests, images } from "@/data/site";
 import PageHero from "@/components/PageHero";
 import ListingCard from "@/components/ListingCard";
 import Reveal from "@/components/Reveal";
+import JourneyPathways from "@/components/JourneyPathways";
 
 export const metadata = {
   title: "Interests",
@@ -63,6 +64,7 @@ export default function InterestsPage() {
           </Reveal>
         </div>
       </section>
+      <JourneyPathways current="Your style" />
     </>
   );
 }

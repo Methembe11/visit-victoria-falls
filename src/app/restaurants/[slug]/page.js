@@ -4,6 +4,7 @@ import { restaurants } from "@/data/site";
 import PageHero from "@/components/PageHero";
 import ListingCard from "@/components/ListingCard";
 import Reveal from "@/components/Reveal";
+import ReferralPanel from "@/components/ReferralPanel";
 
 export function generateStaticParams() {
   return restaurants.map((place) => ({ slug: place.slug }));
@@ -84,18 +85,11 @@ export default async function RestaurantPage({ params }) {
         </div>
 
         <aside className="aside-card">
-          <span className="eyebrow">Make an evening of it</span>
-          <h3>Pair dinner with the river.</h3>
-          <p>
-            A sunset cruise followed by a late dinner is one of the simplest good days in Victoria
-            Falls. The planner can place both without overloading the schedule.
-          </p>
-          <Link href="/plan" className="btn btn--solid">Plan an evening</Link>
-          <Link href="/things-to-do/zambezi-sunset-cruise" className="btn btn--ghost">Sunset cruises</Link>
+          <ReferralPanel type="dining" slug={place.slug} name={place.name} enquiryHref={`/contact?topic=Restaurant%20reservation&listing=${encodeURIComponent(place.name)}`} plannerHref="/plan" />
           <dl className="aside-card__meta">
             <div><dt>Type</dt><dd>{place.type}</dd></div>
             <div><dt>Area</dt><dd>{place.area}</dd></div>
-            <div><dt>Payment</dt><dd>At venue</dd></div>
+            <div><dt>Reservation</dt><dd>Confirm directly with venue</dd></div>
           </dl>
         </aside>
       </div>

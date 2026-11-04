@@ -5,6 +5,7 @@ import { resolveRelated } from "@/lib/resolve";
 import PageHero from "@/components/PageHero";
 import ListingCard from "@/components/ListingCard";
 import Reveal from "@/components/Reveal";
+import ReferralPanel from "@/components/ReferralPanel";
 
 export function generateStaticParams() {
   return experiences.map((item) => ({ slug: item.slug }));
@@ -88,26 +89,13 @@ export default async function ExperiencePage({ params }) {
         </div>
 
         <aside className="aside-card">
-          <span className="eyebrow">Plan this experience</span>
-          <h3>Add it to your trip.</h3>
-          <p>
-            Ask a trip-planning question, or use the planner to see how this experience fits into a
-            day-by-day outline.
-          </p>
-          <Link href={`/contact?topic=Trip%20planning&listing=${encodeURIComponent(item.title)}`} className="btn btn--solid">
-            Ask about this experience
-          </Link>
-          <Link href="/plan" className="btn btn--ghost">Open the planner</Link>
+          <ReferralPanel type="experience" slug={item.slug} name={item.title} enquiryHref={`/contact?topic=Trip%20planning&listing=${encodeURIComponent(item.title)}`} plannerHref="/plan" />
           <dl className="aside-card__meta">
             <div><dt>Category</dt><dd>{item.category}</dd></div>
             <div><dt>Duration</dt><dd>{item.duration}</dd></div>
             <div><dt>Area</dt><dd>{item.area}</dd></div>
-            <div><dt>Booking</dt><dd>With provider</dd></div>
+            <div><dt>Booking</dt><dd>Direct with operator</dd></div>
           </dl>
-          <p className="micro">
-            Visit Victoria Falls does not take payments or hold bookings. Some referrals may earn a
-            commission; this never changes the price you pay.
-          </p>
         </aside>
       </div>
 
