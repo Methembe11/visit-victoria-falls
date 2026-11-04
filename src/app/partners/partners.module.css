@@ -1,0 +1,41 @@
+.intro { background: var(--paper, #f5f1e8); }
+.introGrid,.termsGrid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,8vw,120px); align-items:start; }
+.lead { font-family:var(--font-display, Georgia, serif); font-size:clamp(1.45rem,2.4vw,2.1rem); line-height:1.3; margin:0 0 22px; }
+.introGrid p:not(.lead) { max-width:620px; }
+.note { margin-top:28px; padding:16px 18px; border-left:2px solid #8b765b; background:rgba(255,255,255,.48); font-size:.9rem; }
+.process { background:#fff; }
+.steps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:#dedbd3; border:1px solid #dedbd3; margin-top:42px; }
+.step { background:#fff; padding:28px 24px 32px; min-height:210px; }
+.stepNumber { color:#927d60; font-size:.75rem; letter-spacing:.12em; }
+.step h3 { font-family:var(--font-display,Georgia,serif); font-size:1.45rem; font-weight:400; margin:28px 0 10px; }
+.step p { color:#66645e; font-size:.9rem; line-height:1.7; margin:0; }
+.flow { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:18px; margin-top:38px; padding:22px; background:#f5f1e8; color:#33382f; text-align:center; font-size:.85rem; }
+.flow i { color:#998365; font-style:normal; font-size:1.2rem; }
+.prospects { background:#263f32; color:#f5f1e8; }
+.directoryHead { display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:end; margin-bottom:54px; }
+.directoryHead p { color:rgba(245,241,232,.72); line-height:1.8; max-width:560px; margin:0; }
+.prospects :global(.eyebrow) { color:#c8b99f; }
+.category { margin-top:38px; }
+.categoryTitle { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(245,241,232,.25); padding-bottom:14px; margin-bottom:18px; }
+.categoryTitle h3 { font-family:var(--font-display,Georgia,serif); font-size:1.45rem; font-weight:400; margin:0; }
+.categoryTitle span { color:#c8b99f; font-size:.75rem; }
+.operatorGrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.operator { display:block; min-width:0; overflow:hidden; border:1px solid rgba(245,241,232,.2); background:rgba(255,255,255,.045); color:inherit; text-decoration:none; transition:transform .25s ease,border-color .25s ease,background .25s ease; }
+.operator:hover { transform:translateY(-5px); background:rgba(255,255,255,.09); border-color:rgba(245,241,232,.5); }
+.operator:focus-visible { outline:2px solid #d5c4a8; outline-offset:4px; }
+.operatorImage { position:relative; height:clamp(170px,18vw,230px); overflow:hidden; background:linear-gradient(135deg,#536b5a,#1f3328); }
+.operatorImage::after { content:""; position:absolute; inset:35% 0 0; background:linear-gradient(transparent,rgba(0,0,0,.46)); pointer-events:none; }
+.operatorImage img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .55s cubic-bezier(.2,.7,.2,1); }
+.operator:hover .operatorImage img { transform:scale(1.055); }
+.status { position:absolute; z-index:1; top:13px; left:13px; border:1px solid rgba(255,255,255,.65); border-radius:30px; padding:6px 10px; color:#fff; background:rgba(20,32,25,.55); backdrop-filter:blur(10px); font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
+.visitLabel { position:absolute; z-index:1; right:14px; bottom:13px; color:#fff; font-size:.72rem; letter-spacing:.03em; opacity:.9; }
+.operatorBody { padding:18px 19px 20px; }
+.operator h4 { font-family:var(--font-display,Georgia,serif); font-size:1.3rem; font-weight:400; line-height:1.2; margin:0 0 8px; }
+.operator p { color:rgba(245,241,232,.62); font-size:.78rem; margin:0; }
+.disclaimer { max-width:850px; margin:38px 0 0; padding-top:18px; border-top:1px solid rgba(245,241,232,.22); color:rgba(245,241,232,.62); font-size:.78rem; line-height:1.7; }
+.terms { background:#eee9df; }
+.termsGrid p,.termsGrid li { line-height:1.8; color:#55564f; }
+.termsGrid ul { padding-left:20px; margin:20px 0 28px; }
+.termsGrid li { padding:4px 0; }
+@media(max-width:800px) { .introGrid,.termsGrid,.directoryHead { grid-template-columns:1fr; gap:24px; } .steps { grid-template-columns:repeat(2,minmax(0,1fr)); } .operatorGrid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:520px) { .steps,.operatorGrid { grid-template-columns:1fr; } .step { min-height:0; } .flow { flex-direction:column; gap:9px; } .flow i { transform:rotate(90deg); } .operator { min-height:145px; } }
