@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./VideoHero.module.css";
 
 export default function VideoHero() {
-  const sectionRef = useRef(null);
-  const videoRef = useRef(null);
-  const frameRef = useRef(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [mobile, setMobile] = useState(false);
 
@@ -27,73 +24,30 @@ export default function VideoHero() {
     };
   }, []);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section || reducedMotion || mobile) {
-      section?.style.setProperty("--hero-progress", "0");
-      return undefined;
-    }
-
-    let lastProgress = -1;
-    const updateFrame = () => {
-      cancelAnimationFrame(frameRef.current);
-      frameRef.current = requestAnimationFrame(() => {
-        const distance = section.offsetHeight - window.innerHeight;
-        const progress = distance > 0
-          ? Math.min(1, Math.max(0, -section.getBoundingClientRect().top / distance))
-          : 0;
-        section.style.setProperty("--hero-progress", String(progress));
-
-        if (video && Number.isFinite(video.duration) && video.duration > 0 && Math.abs(progress - lastProgress) > 0.002) {
-          lastProgress = progress;
-          try {
-            const targetTime = progress * video.duration;
-            if (Math.abs(video.currentTime - targetTime) > 0.08) video.currentTime = targetTime;
-          } catch {
-            // Seeking is not available until the browser has loaded video metadata.
-          }
-        }
-      });
-    };
-
-    window.addEventListener("scroll", updateFrame, { passive: true });
-    window.addEventListener("resize", updateFrame);
-    video?.addEventListener("loadedmetadata", updateFrame);
-    updateFrame();
-    return () => {
-      cancelAnimationFrame(frameRef.current);
-      window.removeEventListener("scroll", updateFrame);
-      window.removeEventListener("resize", updateFrame);
-      video?.removeEventListener("loadedmetadata", updateFrame);
-    };
-  }, [reducedMotion, mobile]);
-
   return (
-    <section ref={sectionRef} className={styles.scrollSection} aria-label="Discover Victoria Falls">
+    <section className={styles.scrollSection} aria-label="Discover Victoria Falls">
       <div className={styles.stickyFrame}>
         {!reducedMotion && (
           <video
-            ref={videoRef}
             className={styles.video}
-            src="/hero-video.mp4"
-            poster="/hero-poster.jpg"
+            src="https://ik.imagekit.io/mkhize/Beneath%20Final%20Hero%20Video.mp4?updatedAt=1792481574354"
             muted
             playsInline
-            preload="metadata"
+            autoPlay
+            loop
+            preload="auto"
             aria-hidden="true"
           />
         )}
-        <div className={styles.scrim} />
         <div className={styles.content}>
-          <p className={styles.eyebrow}>Zimbabwe · Africa</p>
+          <p className={styles.eyebrow}>Zimbabwe - Africa</p>
           <h1 className={styles.title}>
             Where the world<br />
             <em>comes to feel</em><br />
             something.
           </h1>
           <p className={styles.description}>
-            Discover the wonder of Victoria Falls — from the rainforest and the river
+            Discover the wonder of Victoria Falls - from the rainforest and the river
             to unforgettable experiences on either side of the gorge.
           </p>
           <form className={styles.search} action="/search" method="get" role="search">
@@ -103,7 +57,7 @@ export default function VideoHero() {
                 id="hero-destination-search"
                 type="search"
                 name="q"
-                placeholder="Try helicopter flights, lodges, sunset cruises…"
+                placeholder="Try helicopter flights, lodges, sunset cruises..."
                 autoComplete="off"
               />
               <button type="submit" aria-label="Search Victoria Falls">Search <span aria-hidden="true">↗</span></button>
@@ -114,10 +68,42 @@ export default function VideoHero() {
             <Link href="/places-to-stay" className={styles.secondary}>Find a place to stay</Link>
           </div>
         </div>
+
+        <aside className={styles.weatherCard} aria-label="Victoria Falls weather">
+          <p className={styles.weatherLocation}>
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M13 6.7c0 3.6-5 7.3-5 7.3S3 10.3 3 6.7a5 5 0 1 1 10 0Z" />
+              <circle cx="8" cy="6.5" r="1.6" />
+            </svg>
+            <span>Victoria Falls, Zimbabwe</span>
+          </p>
+          <div className={styles.weatherCurrent}>
+            <span className={styles.weatherTemperature}>28°</span>
+            <div className={styles.weatherCondition}>
+              <span>Partly cloudy</span>
+              <small>Feels like 30°</small>
+            </div>
+          </div>
+          <div className={styles.weatherDetails}>
+            <div className={styles.weatherMetric}>
+              <span>High / Low</span>
+              <strong>31° / 20°</strong>
+            </div>
+            <div className={styles.weatherMetric}>
+              <span>Humidity</span>
+              <strong>62%</strong>
+            </div>
+            <div className={styles.weatherMetric}>
+              <span>Wind</span>
+              <strong>12 km/h</strong>
+            </div>
+          </div>
+        </aside>
+
         <div className={styles.bottomLine}>
-          <span>17°55′ S&nbsp;&nbsp; 25°51′ E</span>
+          <span>17 55 S&nbsp;&nbsp; 25 51 E</span>
           <span className={styles.scrollCue}><i /> {mobile || reducedMotion ? "Explore below" : "Scroll to discover"}</span>
-          <span>Victoria Falls · Zimbabwe</span>
+          <span>Victoria Falls - Zimbabwe</span>
         </div>
       </div>
     </section>

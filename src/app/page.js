@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import {
   site,
@@ -29,36 +29,48 @@ const popular = [
   .map(pickExperience)
   .filter(Boolean);
 
-const exploreCategories = [
+const exploreSlides = [
   {
-    name: "Adventure",
-    text: "Flights, bungee and the gorge.",
+    title: "Adventure",
+    caption: "Flights, bungee and the gorge.",
+    image: "https://visitzimbabwe.b-cdn.net/theme/theme-adventure.jpg",
+    alt: "Adventure experiences in Victoria Falls",
     href: "/interests/adventure",
-    image: pickInterest("adventure")?.image ?? images.themeAdventure,
   },
   {
-    name: "Nature & wildlife",
-    text: "Rainforest, river and the national park.",
+    title: "Nature & wildlife",
+    caption: "Rainforest, river and the national park.",
+    image: "https://visitzimbabwe.b-cdn.net/theme/theme-nature.jpg",
+    alt: "Nature and wildlife in Victoria Falls",
     href: "/interests/wildlife",
-    image: pickInterest("wildlife")?.image ?? images.themeNature,
   },
   {
-    name: "Zambezi River",
-    text: "Cruises, sunsets and time on the water.",
+    title: "Zambezi River",
+    caption: "Cruises, sunsets and time on the water.",
+    image: "https://visitzimbabwe.b-cdn.net/guides/victoria-falls/sunset-cruise-zambezi-victoria-falls-boats-1767724537282.jpg",
+    alt: "Zambezi River in Victoria Falls",
     href: "/things-to-do?category=River",
-    image: images.sunsetCruise,
   },
   {
-    name: "Culture & heritage",
-    text: "Local life, history and the bridge.",
+    title: "Culture & heritage",
+    caption: "Local life, history and the bridge.",
+    image: "https://visitzimbabwe.b-cdn.net/theme/theme-culture.jpg",
+    alt: "Culture and heritage in Victoria Falls",
     href: "/interests/culture",
-    image: pickInterest("culture")?.image ?? images.themeCulture,
   },
   {
-    name: "Relaxation",
-    text: "Quiet lodges and unhurried days.",
+    title: "Relaxation",
+    caption: "Quiet lodges and unhurried days.",
+    image: "https://visitzimbabwe.b-cdn.net/theme/theme-wellness.jpg",
+    alt: "Relaxation in Victoria Falls",
     href: "/interests/relaxation",
-    image: pickInterest("relaxation")?.image ?? images.themeWellness,
+  },
+  {
+    title: "The Falls",
+    caption: "Rainforest paths, viewpoints and the thunder of the gorge.",
+    image: images.hero,
+    alt: "Victoria Falls cascading into the Batoka Gorge",
+    href: "/landmarks",
   },
 ];
 
@@ -98,7 +110,7 @@ const businessGroups = [
     items: featuredStays.slice(0, 3).map((stay) => stay.name),
   },
   {
-    title: "Restaurants & cafés",
+    title: "Restaurants & cafÃ©s",
     count: restaurants.length,
     href: "/restaurants",
     text: "From gorge-side lunches to informal town grills.",
@@ -129,10 +141,10 @@ export default function HomePage() {
 
   return (
     <div className={styles.page}>
-      {/* 01 — Cinematic scroll-locked video hero */}
+      {/* 01 â€” Cinematic scroll-locked video hero */}
       <VideoHero />
 
-      {/* 02 — Popular experiences */}
+      {/* 02 â€” Popular experiences */}
       <section className={styles.section} aria-labelledby="popular-heading">
         <div className="shell">
           <Reveal className={styles.sectionHead}>
@@ -143,77 +155,41 @@ export default function HomePage() {
               </h2>
             </div>
             <p className={styles.sectionHeadText}>
-              Four ways into the destination — from the air, on the water, on foot and in the bush.
+              Four ways into the destination â€” from the air, on the water, on foot and in the bush.
               Each listing explains what to expect and what to confirm before you book.
             </p>
           </Reveal>
 
-          {feature && (
-            <div className={styles.popularGrid}>
+          <div className={styles.popularStack}>
+            {popular.map((experience, index) => (
               <Link
-                href={`/things-to-do/${feature.slug}`}
-                className={styles.featureCard}
+                key={experience.slug}
+                href={`/things-to-do/${experience.slug}`}
+                className={styles.stackCard}
                 data-track="listing_click"
-                data-track-label={feature.title}
+                data-track-label={experience.title}
               >
                 <Image
-                  src={feature.image}
-                  alt={feature.title}
+                  src={experience.image}
+                  alt={experience.title}
                   fill
-                  sizes="(max-width: 960px) 100vw, 960px"
-                  className={styles.featureCardMedia}
+                  sizes="(max-width: 700px) 78vw, 42vw"
+                  className={styles.stackCardMedia}
                 />
-                <span className={styles.featureCardBody}>
-                  <span className={styles.cardKicker}>
-                    {feature.category} · {feature.duration}
-                  </span>
-                  <span className={styles.featureCardTitle}>{feature.title}</span>
-                  <span className={styles.featureCardText}>{feature.blurb}</span>
-                  <span className={styles.cardCta}>
-                    View experience <span aria-hidden="true">↗</span>
-                  </span>
+                <span className={styles.stackCardShade} />
+                <span className={styles.stackCardIndex}>0{index + 1}</span>
+                <span className={styles.stackCardCaption}>
+                  <span className={styles.stackCardMeta}>{experience.category} · {experience.duration}</span>
+                  <span className={styles.stackCardTitle}>{experience.title}</span>
+                  <span className={styles.stackCardArrow} aria-hidden="true">↗</span>
                 </span>
               </Link>
-
-              <div className={styles.popularList}>
-                {popularRows.map((experience) => (
-                  <Link
-                    key={experience.slug}
-                    href={`/things-to-do/${experience.slug}`}
-                    className={styles.popularRow}
-                    data-track="listing_click"
-                    data-track-label={experience.title}
-                  >
-                    <span className={styles.popularRowMedia}>
-                      <Image
-                        src={experience.image}
-                        alt={experience.title}
-                        fill
-                        sizes="(max-width: 620px) 144px, 192px"
-                      />
-                    </span>
-                    <span className={styles.popularRowBody}>
-                      <span className={styles.popularRowMeta}>
-                        {experience.category} · {experience.duration}
-                      </span>
-                      <span className={styles.popularRowTitle}>{experience.title}</span>
-                      <span className={styles.popularRowText}>{experience.blurb}</span>
-                    </span>
-                  </Link>
-                ))}
-
-                <Link href="/things-to-do" className={styles.popularAll}>
-                  All {experiences.length} experiences
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </div>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 03 — Explore Victoria Falls */}
-      <section className={`${styles.section} ${styles.sectionSage}`} aria-labelledby="explore-heading">
+      {/* 03 — Explore Victoria Falls */}      <section className={`${styles.section} ${styles.sectionSage}`} aria-labelledby="explore-heading">
         <div className="shell">
           <Reveal className={styles.sectionHead}>
             <div className={styles.sectionHeadCopy}>
@@ -223,32 +199,20 @@ export default function HomePage() {
               </h2>
             </div>
             <p className={styles.sectionHeadText}>
-              Five routes into the destination, from the sound of the gorge to a quiet afternoon
+              Six ways into the destination, from the sound of the gorge to a quiet afternoon
               on the river. Choose the one that sounds like your trip.
             </p>
           </Reveal>
 
           <PolaroidLineCarousel
-            slides={exploreCategories.map((c) => ({
-              image: c.image,
-              title: c.name,
-              caption: c.text,
-              alt: `${c.name} in Victoria Falls`,
-            }))}
-            height="80vh"
-            cardWidth={320}
-            sag={36}
-            swing={1}
-            autoplay={0}
-            string="#8a7f72"
-            background="#F5F1E8"
-            ink="#263F32"
-            ariaLabel="Explore routes"
+            slides={exploreSlides}
+            height="600px"
+            ariaLabel="Explore curated experiences in Victoria Falls"
           />
         </div>
       </section>
 
-      {/* 04 — Places to stay */}
+      {/* 04 â€” Places to stay */}
       <section className={styles.section} aria-labelledby="stay-heading">
         <div className="shell">
           <div className={styles.stayLayout}>
@@ -276,7 +240,7 @@ export default function HomePage() {
                 Rates, availability and inclusions are set by each property.
               </p>
               <Link href="/places-to-stay" className={styles.textLink}>
-                All {stays.length} places to stay <span aria-hidden="true">→</span>
+                All {stays.length} places to stay <span aria-hidden="true">â†’</span>
               </Link>
             </Reveal>
 
@@ -299,7 +263,7 @@ export default function HomePage() {
                   </span>
                   <span className={styles.stayBody}>
                     <span className={styles.stayMeta}>
-                      {stay.type} · {stay.area}
+                      {stay.type} Â· {stay.area}
                     </span>
                     <span className={styles.stayName}>{stay.name}</span>
                     <span className={styles.stayText}>{stay.blurb}</span>
@@ -311,7 +275,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 05 — More things to do */}
+      {/* 05 â€” More things to do */}
       <section className={`${styles.section} ${styles.sectionSand}`} aria-labelledby="more-heading">
         <div className="shell">
           <Reveal className={styles.sectionHead}>
@@ -344,7 +308,7 @@ export default function HomePage() {
                 />
                 <span className={styles.moreFeatureBody}>
                   <span className={styles.cardKicker}>
-                    {moreFeature.category} · {moreFeature.duration}
+                    {moreFeature.category} Â· {moreFeature.duration}
                   </span>
                   <span className={styles.moreFeatureTitle}>{moreFeature.title}</span>
                   <span className={styles.moreFeatureText}>{moreFeature.blurb}</span>
@@ -368,18 +332,18 @@ export default function HomePage() {
                     <span>
                       <span className={styles.moreRowTitle}>{experience.title}</span>
                       <span className={styles.moreRowMeta}>
-                        {experience.category} · {experience.duration}
+                        {experience.category} Â· {experience.duration}
                       </span>
                     </span>
                     <span className={styles.moreArrow} aria-hidden="true">
-                      →
+                      â†’
                     </span>
                   </Link>
                 ))}
               </div>
               <div className={styles.moreFooter}>
                 <Link href="/things-to-do" className={styles.textLink}>
-                  Browse all {experiences.length} experiences <span aria-hidden="true">→</span>
+                  Browse all {experiences.length} experiences <span aria-hidden="true">â†’</span>
                 </Link>
               </div>
             </div>
@@ -387,7 +351,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 06 — AI trip planner */}
+      {/* 06 â€” AI trip planner */}
       <section
         className={`${styles.section} ${styles.sectionDark}`}
         aria-labelledby="planner-heading"
@@ -400,7 +364,7 @@ export default function HomePage() {
                 Tell us the shape of your trip.
               </h2>
               <p className={styles.plannerCopyText}>
-                A suggested outline built from the destination information on this site — your
+                A suggested outline built from the destination information on this site â€” your
                 month, pace, budget and interests. Use it as a starting point, then confirm the
                 details with the providers you choose.
               </p>
@@ -409,7 +373,7 @@ export default function HomePage() {
                   Open the trip planner
                 </Link>
                 <Link href="/itineraries" className={`${styles.textLink} ${styles.textLinkLight}`}>
-                  Browse itineraries <span aria-hidden="true">→</span>
+                  Browse itineraries <span aria-hidden="true">â†’</span>
                 </Link>
               </div>
               <p className={styles.plannerNote}>
@@ -431,7 +395,7 @@ export default function HomePage() {
                       <span className={styles.plannerDay}>Day {day.day}</span>
                       <span>
                         <span className={styles.plannerDayTitle}>{day.title}</span>
-                        <span className={styles.plannerDayItems}>{day.items.join(" · ")}</span>
+                        <span className={styles.plannerDayItems}>{day.items.join(" Â· ")}</span>
                       </span>
                     </li>
                   ))}
@@ -445,7 +409,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 07 — Travel guides */}
+      {/* 07 â€” Travel guides */}
       <section className={styles.section} aria-labelledby="guides-heading">
         <div className="shell">
           <Reveal className={styles.sectionHead}>
@@ -456,7 +420,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link href="/guides" className={styles.textLink}>
-              All {guides.length} guides <span aria-hidden="true">→</span>
+              All {guides.length} guides <span aria-hidden="true">â†’</span>
             </Link>
           </Reveal>
 
@@ -473,7 +437,7 @@ export default function HomePage() {
                 </span>
                 <span className={styles.guideBody}>
                   <span className={styles.guideMeta}>
-                    {guide.category} · {guide.readTime}
+                    {guide.category} Â· {guide.readTime}
                   </span>
                   <span className={styles.guideTitle}>{guide.title}</span>
                   <span className={styles.guideText}>{guide.excerpt}</span>
@@ -487,13 +451,13 @@ export default function HomePage() {
               Arriving, visas, transfers and what to pack.
             </span>
             <Link href="/travel" className={styles.textLink}>
-              Practical travel information <span aria-hidden="true">→</span>
+              Practical travel information <span aria-hidden="true">â†’</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 08 — Local businesses */}
+      {/* 08 â€” Local businesses */}
       <section className={styles.section} aria-labelledby="business-heading">
         <div className="shell">
           <div className={styles.bizHead}>
@@ -504,7 +468,7 @@ export default function HomePage() {
               </h2>
             </div>
             <p className={styles.sectionHeadText}>
-              A directory of stays, kitchens and operators. Listings are grouped by what they are —
+              A directory of stays, kitchens and operators. Listings are grouped by what they are â€”
               not ranked by who paid.
             </p>
           </div>
@@ -521,7 +485,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <Link href={group.href} className={styles.bizLink}>
-                  View the listings →
+                  View the listings â†’
                 </Link>
               </div>
             ))}
@@ -532,13 +496,13 @@ export default function HomePage() {
               The directory covers stays, kitchens and operators across Victoria Falls.
             </span>
             <Link href="/businesses" className={styles.textLink}>
-              The full directory <span aria-hidden="true">→</span>
+              The full directory <span aria-hidden="true">â†’</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 09 — Visitor information */}
+      {/* 09 â€” Visitor information */}
       <section
         className={`${styles.section} ${styles.sectionSage}`}
         aria-labelledby="visitor-heading"
@@ -558,7 +522,7 @@ export default function HomePage() {
                 {site.email}
               </a>
               <p className={styles.visitorReview}>
-                Reviewed {site.lastReviewed} · {site.location}
+                Reviewed {site.lastReviewed} Â· {site.location}
               </p>
             </Reveal>
 
@@ -566,7 +530,7 @@ export default function HomePage() {
               {visitorLinks.map((link) => (
                 <Link key={link.href} href={link.href} className={styles.visitorLink}>
                   <span>{link.label}</span>
-                  <span aria-hidden="true">↗</span>
+                  <span aria-hidden="true">â†—</span>
                 </Link>
               ))}
             </div>
@@ -576,3 +540,4 @@ export default function HomePage() {
     </div>
   );
 }
+

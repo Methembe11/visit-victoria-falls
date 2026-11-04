@@ -1,53 +1,105 @@
 "use client";
 
 import * as React from "react";
+import styles from "./polaroid-line-carousel.module.css";
 
 export default function PolaroidLineCarousel({
   slides = [],
-  height = "80vh",
+  height = "540px",
   className,
   style,
   ariaLabel = "Image carousel",
 }) {
+  const trackRef = React.useRef(null);
   const [active, setActive] = React.useState(0);
+  const [paused, setPaused] = React.useState(false);
+
+  const goTo = React.useCallback((index) => {
+    if (!slides.length || !trackRef.current) return;
+    const next = (index + slides.length) % slides.length;
+    const track = trackRef.current;
+    const card = track.children[next];
+    if (!card) return;
+
+    track.scrollTo({
+      left: card.offsetLeft - track.offsetLeft - 8,
+      behavior: "smooth",
+    });
+    setActive(next);
+  }, [slides.length]);
+
+  React.useEffect(() => {
+    if (paused || slides.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setInterval(() => {
+      setActive((current) => {
+        const next = (current + 1) % slides.length;
+        const track = trackRef.current;
+        const card = track?.children[next];
+
+        if (track && card) {
+          track.scrollTo({
+            left: card.offsetLeft - track.offsetLeft - 8,
+            behavior: "smooth",
+          });
+        }
+        return next;
+      });
+    }, 3800);
+
+    return () => window.clearInterval(timer);
+  }, [paused, slides.length]);
+
+  const pauseForInteraction = () => setPaused(true);
+  const resumeAutoplay = () => setPaused(false);
+
   return (
     <div
-      className={["pl-root", className].filter(Boolean).join(" ")}
-      style={{ height, ...style, position: "relative", overflow: "hidden", background: "#F5F1E8" }}
+      className={["pl-root", styles.root, className].filter(Boolean).join(" ")}
+      style={{ height, ...style }}
       role="region"
+      aria-roledescription="carousel"
       aria-label={ariaLabel}
-      tabIndex={0}
+      onMouseEnter={pauseForInteraction}
+      onMouseLeave={resumeAutoplay}
+      onFocusCapture={pauseForInteraction}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) resumeAutoplay();
+      }}
+      onTouchStart={pauseForInteraction}
+      onTouchEnd={() => {
+        window.setTimeout(resumeAutoplay, 5000);
+      }}
     >
-      <div style={{ display: "flex", gap: 24, padding: "3rem 2rem", overflowX: "auto", alignItems: "flex-end", height: "100%" }}>
-        {slides.map((s, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            aria-label={s.title || "Slide " + i}
-            style={{
-              flex: "0 0 300px",
-              background: "#fbfaf7",
-              padding: 10,
-              border: i === active ? "2px solid #263F32" : "1px solid #D4C3A9",
-              boxShadow: "0 18px 30px -16px rgba(0,0,0,.4)",
-              textAlign: "left",
-              cursor: "pointer",
-              borderRadius: 2,
-            }}
+      <div className="pl-rope" aria-hidden="true" />
+      <div className={`pl-track ${styles.track}`} ref={trackRef}>
+        {slides.map((slide, index) => (
+          <a
+            key={slide.title || index}
+            href={slide.href || "#"}
+            className={`pl-card ${styles.card} pl-card-${index % 6} ${active === index ? `is-active ${styles.cardActive}` : ""}`}
+            aria-label={`Explore ${slide.title}`}
+            onClick={() => setActive(index)}
           >
-            {s.image ? (
-              <img src={s.image} alt={s.alt || s.title || ""} style={{ width: "100%", aspectRatio: 1, objectFit: "cover", display: "block" }} />
-            ) : (
-              <div style={{ width: "100%", aspectRatio: 1, background: "#e3c9a1" }} />
-            )}
-            <div style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 18, marginTop: 8, color: "#161513" }}>
-              {s.title}
-            </div>
-            <div style={{ fontFamily: "Manrope, sans-serif", fontSize: 13, color: "#263F32", marginTop: 4 }}>
-              {s.caption}
-            </div>
-          </button>
+            <span className={`pl-peg ${styles.peg}`} aria-hidden="true"><i /></span>
+            <span className={`pl-photo ${styles.photo}`}>
+              {slide.image ? <img src={slide.image} alt={slide.alt || slide.title || ""} /> : null}
+            </span>
+            <span className={`pl-caption ${styles.caption}`}>
+              <span className={`pl-card-title ${styles.cardTitle}`}>{slide.title}</span>
+              <span className={`pl-card-caption ${styles.cardCaption}`}>{slide.caption}</span>
+            </span>
+          </a>
         ))}
+      </div>
+
+      <div className={`pl-controls ${styles.controls}`} aria-label="Carousel controls">
+        <div className={`pl-glass-controls ${styles.glassControls}`}>
+          <button type="button" className={`pl-arrow ${styles.arrow}`} onClick={() => goTo(active - 1)} aria-label="Previous category">←</button>
+          <span className={`pl-progress ${styles.progress}`}>{String(active + 1).padStart(2, "0")} <i /> {String(slides.length).padStart(2, "0")}</span>
+          <button type="button" className={`pl-arrow ${styles.arrow}`} onClick={() => goTo(active + 1)} aria-label="Next category">→</button>
+        </div>
       </div>
     </div>
   );

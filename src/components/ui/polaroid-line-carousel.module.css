@@ -1,0 +1,168 @@
+.root {
+  position: relative;
+  width: 100%;
+  min-height: 440px;
+  isolation: isolate;
+  overflow: hidden;
+  color: #263f32;
+}
+.root::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 2%;
+  right: 2%;
+  top: 0;
+  height: 36px;
+  border-bottom: 1.5px solid rgba(38, 63, 50, .68);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  filter: drop-shadow(0 2px 1px rgba(38, 63, 50, .12));
+}
+.track {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 2.5vw, 36px);
+  height: calc(100% - 76px);
+  padding: 42px max(5%, calc((100% - 1180px) / 2)) 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+}
+.track::-webkit-scrollbar { display: none; }
+.card {
+  --tilt: 0deg;
+  position: relative;
+  display: flex;
+  flex: 0 0 clamp(230px, 24vw, 310px);
+  flex-direction: column;
+  align-self: flex-start;
+  padding: 12px 12px 18px;
+  background: #fffdf8;
+  color: #1d2922;
+  border: 1px solid rgba(38, 63, 50, .12);
+  box-shadow: 0 12px 28px rgba(28, 35, 29, .12), 0 2px 5px rgba(28, 35, 29, .07);
+  transform: rotate(var(--tilt));
+  transform-origin: 50% 10%;
+  scroll-snap-align: center;
+  transition: transform 500ms cubic-bezier(.2,.75,.25,1), box-shadow 500ms ease;
+  text-decoration: none;
+}
+.card:nth-child(6n + 1) { --tilt: -2.4deg; margin-top: 16px; }
+.card:nth-child(6n + 2) { --tilt: 1.8deg; margin-top: 0; }
+.card:nth-child(6n + 3) { --tilt: -1.2deg; margin-top: 26px; }
+.card:nth-child(6n + 4) { --tilt: 2.2deg; margin-top: 8px; }
+.card:nth-child(6n + 5) { --tilt: -1.8deg; margin-top: 22px; }
+.card:nth-child(6n) { --tilt: 1.2deg; margin-top: 0; }
+.card:nth-child(6n + 1),
+.card:nth-child(6n + 2),
+.card:nth-child(6n + 3),
+.card:nth-child(6n + 4),
+.card:nth-child(6n + 5) { margin-top: 0; }
+.card:hover, .card:focus-visible, .cardActive {
+  z-index: 3;
+  transform: translateY(-8px) rotate(0deg);
+  box-shadow: 0 22px 42px rgba(28, 35, 29, .2), 0 4px 10px rgba(28, 35, 29, .08);
+}
+.peg {
+  position: absolute;
+  z-index: 2;
+  top: -34px;
+  left: 50%;
+  width: 13px;
+  height: 42px;
+  border-radius: 3px 3px 2px 2px;
+  background: linear-gradient(90deg, #b18c5b, #e1c69b 48%, #9c784e);
+  box-shadow: 1px 2px 4px rgba(0,0,0,.18);
+  transform: translateX(-50%) rotate(-2deg);
+}
+.peg i {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 5px;
+  height: 1px;
+  background: rgba(75, 52, 28, .35);
+}
+.photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 4.35;
+  overflow: hidden;
+  background: #e8dfd1;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 800ms cubic-bezier(.16,1,.3,1);
+}
+.card:hover .photo img, .card:focus-visible .photo img { transform: scale(1.045); }
+.caption {
+  display: grid;
+  gap: 6px;
+  padding: 15px 5px 0;
+}
+.cardTitle {
+  font-family: var(--font-instrument), "Instrument Serif", Georgia, serif;
+  font-size: clamp(23px, 2vw, 29px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+}
+.cardCaption {
+  color: #59635a;
+  font-family: var(--font-manrope), Manrope, sans-serif;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.controls {
+  position: absolute;
+  right: clamp(20px, 5vw, 64px);
+  bottom: 0;
+  z-index: 4;
+}
+.glassControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border: 1px solid rgba(38, 63, 50, .22);
+  background: rgba(245, 241, 232, .92);
+  color: #263f32;
+}
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(38, 63, 50, .28);
+  border-radius: 50%;
+  font-size: 17px;
+  transition: background .2s ease, color .2s ease;
+}
+.arrow:hover { background: #263f32; color: #fff; }
+.progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font: 500 10px/1 var(--font-manrope), Manrope, sans-serif;
+  letter-spacing: .12em;
+}
+.progress i { width: 24px; height: 1px; background: currentColor; opacity: .5; }
+@media (max-width: 700px) {
+  .root { min-height: 520px; }
+  .root::before { top: 0; height: 24px; }
+  .track { height: calc(100% - 62px); gap: 18px; padding: 40px 7% 20px; }
+  .card { flex-basis: min(78vw, 300px); padding: 10px 10px 16px; }
+  .card:nth-child(n) { margin-top: 0; }
+  .photo { aspect-ratio: 4 / 4.1; }
+  .cardTitle { font-size: 25px; }
+  .controls { right: 7%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card, .photo img, .arrow { transition: none; }
+}

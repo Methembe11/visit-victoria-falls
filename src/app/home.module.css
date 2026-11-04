@@ -1864,3 +1864,116 @@
   .exploreCard:hover .exploreCardMedia, .stayCard:hover .stayMedia img,
   .moreFeature:hover .moreFeatureMedia, .guideCard:hover .guideMedia img { transform: none; }
 }
+
+/* Popular experiences — overlapping editorial image stack */
+.popularStack {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  padding: 24px 2.5vw 48px;
+}
+.stackCard {
+  position: relative;
+  display: block;
+  min-width: 0;
+  aspect-ratio: 3 / 4.15;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  background: var(--sand);
+  border: 6px solid var(--ivory);
+  box-shadow: 0 18px 44px rgba(30, 38, 31, .14);
+  transition: transform 500ms var(--ease-out-expo), box-shadow 500ms ease;
+}
+.stackCard + .stackCard { margin-left: -22px; }
+.stackCard:nth-child(1) { z-index: 1; transform: rotate(-4deg) translateY(12px); }
+.stackCard:nth-child(2) { z-index: 2; transform: rotate(2deg) translateY(-12px); }
+.stackCard:nth-child(3) { z-index: 3; transform: rotate(-1.5deg) translateY(15px); }
+.stackCard:nth-child(4) { z-index: 4; transform: rotate(3.5deg) translateY(-8px); }
+.stackCard:hover, .stackCard:focus-visible { z-index: 8; transform: translateY(-18px) rotate(0) scale(1.035); box-shadow: 0 28px 56px rgba(30, 38, 31, .24); }
+.stackCardMedia { object-fit: cover; transition: transform 800ms var(--ease-out-expo); }
+.stackCard:hover .stackCardMedia { transform: scale(1.06); }
+.stackCardShade { position: absolute; z-index: 0; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.08), transparent 38%, rgba(0,0,0,.72)); }
+.stackCardIndex { position: absolute; z-index: 1; top: 18px; left: 18px; font: 500 10px/1 var(--font-manrope), sans-serif; letter-spacing: .16em; }
+.stackCardCaption { position: absolute; z-index: 1; inset: auto 0 0; display: grid; gap: 8px; padding: 22px 18px; }
+.stackCardMeta { font: 500 9px/1.4 var(--font-manrope), sans-serif; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.78); }
+.stackCardTitle { max-width: 17ch; font: 400 clamp(18px, 1.8vw, 27px)/1.08 var(--font-display), Georgia, serif; }
+.stackCardArrow { position: absolute; right: 18px; bottom: 23px; font-size: 20px; }
+
+@media (max-width: 700px) {
+  .popularStack { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 12px 0 20px; }
+  .stackCard { aspect-ratio: 3 / 4; border-width: 4px; }
+  .stackCard + .stackCard { margin-left: 0; }
+  .stackCard:nth-child(n) { transform: none; }
+  .stackCard:hover, .stackCard:focus-visible { transform: translateY(-5px); }
+  .stackCardCaption { padding: 14px 12px; }
+  .stackCardTitle { font-size: 19px; }
+  .stackCardMeta { font-size: 8px; }
+  .stackCardIndex { top: 12px; left: 12px; }
+}
+
+
+/* Explore Victoria Falls — curated experience cards */
+.curatedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.curatedCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 218px;
+  padding: clamp(24px, 2.6vw, 36px);
+  border: 1px solid rgba(38, 63, 50, 0.14);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--charcoal);
+  transition: transform 260ms var(--ease-out-expo), box-shadow 260ms ease, border-color 260ms ease, background 260ms ease;
+}
+.curatedCard:hover {
+  transform: translateY(-5px);
+  border-color: rgba(38, 63, 50, 0.42);
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(38, 63, 50, 0.09);
+}
+.curatedNumber {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--olive-ink);
+}
+.curatedArrow {
+  position: absolute;
+  top: 25px;
+  right: 28px;
+  font-size: 20px;
+  color: var(--olive-ink);
+  transition: transform 220ms var(--ease-out-expo);
+}
+.curatedCard:hover .curatedArrow {
+  transform: translate(3px, -3px);
+}
+.curatedTitle {
+  margin-top: auto;
+  padding-top: 38px;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.curatedDescription {
+  max-width: 34ch;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--charcoal-soft);
+}
+@media (max-width: 900px) {
+  .curatedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .curatedGrid { grid-template-columns: 1fr; gap: 10px; }
+  .curatedCard { min-height: 176px; padding: 24px; }
+  .curatedTitle { padding-top: 24px; }
+}
