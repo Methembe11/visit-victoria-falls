@@ -3823,3 +3823,6 @@ body, button, input, select, textarea {
 .ai-concierge__composer{display:flex;gap:8px;padding:12px;border-top:1px solid #e2ddd3;background:#fff}.ai-concierge__composer input{min-width:0;flex:1;height:44px;padding:0 12px;border:1px solid #ded9cf;border-radius:2px;font-size:12px}.ai-concierge__composer button{width:44px;height:44px;border-radius:2px;background:#263f32;color:#fff;font-size:21px}.ai-concierge__composer button:disabled{opacity:.4;cursor:not-allowed}.ai-concierge__disclaimer{padding:0 12px 10px;background:#fff;color:#777b73;text-align:center;font-size:9px}
 @media(max-width:520px){.ai-concierge{right:14px;bottom:14px}.ai-concierge__panel{position:fixed;right:10px;bottom:82px;width:calc(100vw - 20px);height:min(650px,calc(100svh - 110px))}.ai-concierge__launcher{min-height:54px;padding:0 16px}}
 @media(prefers-reduced-motion:reduce){.ai-concierge__launcher{transition:none}}
+.ai-concierge__citations{display:grid;gap:5px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(38,63,50,.14)}
+.ai-concierge__citations small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--color-muted,#73766f)}
+.ai-concierge__citations a{font-size:11px;line-height:1.45;color:var(--color-forest,#263f32);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}

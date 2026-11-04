@@ -157,10 +157,11 @@ destination catalogue and links to real listing pages. It never claims live pric
 confirmed bookings.
 
 - Endpoint: `POST /api/concierge`
-- Configure `OPENAI_API_KEY` and optionally `OPENAI_MODEL` for AI-generated replies.
-- Without an OpenAI key, a catalogue-based local fallback remains available.
-- Requests are rate limited. Conversation text is saved only when server-side Supabase credentials
-  are configured.
+- Configure `OPENAI_API_KEY` and `OPENAI_WEB_SEARCH_MODEL=gpt-5.5` for AI replies with optional live web research.
+- The concierge uses the site guides, FAQs and directory first, then can search the web for missing or changing information. Web citations are shown as clickable source links.
+- `OPENAI_MODEL` remains the trip planner model; `OPENAI_WEB_SEARCH_MODEL` controls the concierge search model.
+- Without an OpenAI key, a limited local response remains available; it does not perform web research.
+- Requests are rate limited. Conversation text is saved only when server-side Supabase credentials are configured.
 
 ## Supabase database
 Apply `supabase/migrations/202611030001_initial_platform.sql` to a Supabase project you own.

@@ -39,7 +39,7 @@ export default function AiConcierge() {
       const response = await fetch("/api/concierge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: clean, history: next.slice(0, -1).slice(-6) }),
+        body: JSON.stringify({ message: clean, history: next.slice(0, -1).slice(-10) }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "I couldn't answer just now. Please try again.");
@@ -47,6 +47,7 @@ export default function AiConcierge() {
         role: "assistant",
         content: data.reply,
         recommendations: data.recommendations || [],
+        citations: data.citations || [],
       }]);
     } catch (err) {
       setError(err.message || "Please try again.");
@@ -70,6 +71,14 @@ export default function AiConcierge() {
             {messages.map((item, index) => (
               <div className={`ai-concierge__message ai-concierge__message--${item.role}`} key={index}>
                 <p>{item.content}</p>
+                {item.citations?.length > 0 && (
+                  <div className="ai-concierge__citations">
+                    <small>Sources</small>
+                    {item.citations.map((source) => (
+                      <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗</a>
+                    ))}
+                  </div>
+                )}
                 {item.recommendations?.length > 0 && (
                   <div className="ai-concierge__recommendations">
                     {item.recommendations.map((rec) => (
