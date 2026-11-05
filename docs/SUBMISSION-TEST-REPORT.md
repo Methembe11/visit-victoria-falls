@@ -2,7 +2,7 @@
 
 **Date:** 5 November 2026  
 **Production URL:** https://visit-victoria-falls.vercel.app  
-**Git commit deployed during verification:** f385a0c (the previous production deployment)
+**Git commit deployed during verification:** 83a1ab1 (`Prepare capstone submission documentation and evidence`). The Vercel production deployment for this commit reached `READY`, and the stable production alias was assigned.
 
 ## Deployment checks
 
@@ -64,4 +64,4 @@ After the final typography and documentation changes:
 - `npm run build`: passed; 76 pages generated.
 - `npm run lint`: passed with zero errors and one warning in `src/components/ui/polaroid-line-carousel.js` because it uses a standard `<img>` element.
 
-The final source changes still need to be pushed and the resulting Vercel deployment must reach READY before the updated typography is live.
+The final source changes were pushed as commit `83a1ab1`. Vercel deployed that commit to production and reported `READY`; the stable production alias was confirmed. The Instrument Serif font is now loaded through `next/font/google` and the Manrope interface font remains in place.
