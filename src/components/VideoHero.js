@@ -25,7 +25,7 @@ export default function VideoHero() {
   }, []);
 
   return (
-    <section className={styles.scrollSection} aria-label="Discover Victoria Falls">
+    <section className={`${styles.scrollSection} homepage-hero`} aria-label="Discover Victoria Falls">
       <div className={styles.stickyFrame}>
         {!reducedMotion && (
           <video

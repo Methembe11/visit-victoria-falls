@@ -59,8 +59,8 @@
   --ink: var(--color-ink);
   --muted: var(--color-ink-muted);
   --muted-strong: #4a4c46;
-  /* Muted body copy on the sage panel — 6.4:1 against --sage */
-  --muted-on-sage: #3e4639;
+  /* White muted copy for readability on forest-green surfaces. */
+  --muted-on-sage: #ffffff;
   --hairline: var(--color-line);
   --hairline-light: rgba(247, 243, 234, 0.18);
   --font-editorial: var(--font-display);
@@ -234,13 +234,12 @@ strong {
 
 .section--sage {
   background: var(--sage);
-  /* Darken the muted palette inside sage panels so body copy clears 4.5:1 */
-  --muted: var(--muted-on-sage);
-  --muted-strong: var(--muted-on-sage);
+  --muted: #ffffff;
+  --muted-strong: #ffffff;
 }
 
 .section--sage .eyebrow {
-  color: var(--color-ink);
+  color: #ffffff;
 }
 
 .section--ivory-deep {
@@ -2229,7 +2228,7 @@ strong {
 .callout p {
   font-size: 14px;
   line-height: 1.7;
-  color: var(--muted-on-sage);
+  color: #ffffff;
 }
 
 .callout--dark {
@@ -3831,8 +3830,105 @@ body, button, input, select, textarea {
 .ai-concierge__answer-source{display:block;margin-top:7px;color:var(--color-muted,#77766f);font-size:10px;line-height:1.4;letter-spacing:.01em}
 
 
-/* White type is limited to titles inside photographic interior-page heroes. */
+/* Restored typography: Proxima Nova LT Light with Times New Roman as the editorial serif. */
+:root {
+  --font-proxima: "proxima_nova_ltlight", "Proxima Nova", Arial, sans-serif;
+  --font-display: var(--font-proxima);
+  --font-sans: var(--font-proxima);
+  --font-interface: var(--font-proxima);
+  --font-editorial: "Times New Roman", Times, serif;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-proxima);
+  font-weight: 100;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.page-hero h1,
+.page-hero__title,
+.page-title,
+.listing-title,
+.detail-title {
+  font-family: "proxima_nova_ltlight", "Proxima Nova", Arial, sans-serif;
+  font-size: 39px;
+  font-weight: 100;
+  font-style: normal;
+  line-height: 39px;
+  letter-spacing: normal;
+  color: #000000;
+}
+
+/* Keep page-opening headlines light against photographic and dark-green hero backgrounds. */
+.page-hero h1, .page-hero h2, .page-hero h3, .page-hero h4, .page-hero h5, .page-hero h6, .page-hero .page-hero__title,
+.hero--page h1, .hero--page h2, .hero--page h3, .hero--page h4, .hero--page h5, .hero--page h6, .hero--page .hero__title,
+.section--dark h1, .section--dark h2, .section--dark h3, .section--dark h4, .section--dark h5, .section--dark h6,
+.section--dark .page-title, .section--dark .listing-title, .section--dark .detail-title {
+  color: #ffffff;
+}
+
+/* Replace muted grey copy with white wherever it sits on a dark-green section. */
+.section--dark p, .section--dark .muted, .section--dark .lede, .section--dark .small, .section--dark .micro,
+.section--dark .card__meta, .section--dark .card__excerpt, .section--dark .section-head__aside,
+.section--dark .section-head__aside p, .section--dark .split__body p, .section--dark .split__caption,
+.section--dark .discover__desc, .section--dark .discover__num {
+  color: rgba(255, 255, 255, 0.92);
+}
 .page-hero h1,
 .page-hero .page-hero__title {
   color: #ffffff;
 }
+
+/* Editorial contrast: muted copy becomes white on forest-green surfaces. */
+.callout p,
+.callout p.micro,
+.callout .micro,
+.section--sage p,
+.section--sage .muted,
+.section--sage .lede,
+.section--sage .small,
+.section--sage .micro,
+.section--sage .eyebrow,
+.home-quick__intro,
+.home-quick__meta {
+  color: #ffffff !important;
+}
+
+/* Lighter editorial typography throughout the site. */
+body,
+body * {
+  font-weight: 200 !important;
+  font-synthesis: none;
+}
+
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6,
+body .page-title,
+body .listing-title,
+body .detail-title,
+body .display {
+  font-family: 'Segoe UI Light', 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 300 !important;
+  letter-spacing: -0.035em;
+}
+
+
+/* Homepage hero headline only: restore the requested medium-light 400 weight. */
+.homepage-hero h1,
+.homepage-hero h1 em {
+  font-weight: 400 !important;
+}
+

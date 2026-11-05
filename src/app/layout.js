@@ -1,4 +1,3 @@
-import { Instrument_Serif, Manrope } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import LenisScroll from "@/components/LenisScroll";
@@ -6,25 +5,6 @@ import SiteFooter from "@/components/SiteFooter";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import AiConcierge from "@/components/AiConcierge";
 import { images } from "@/data/site";
-
-/*
- * Brand typography: Instrument Serif for editorial display, Manrope for body and interface.
- * Both are open-source Google Fonts, self-hosted by next/font at build time.
- */
-const instrument = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal"],
-  display: "swap",
-});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -87,7 +67,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${instrument.variable} ${manrope.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body>
         <a className="skip-link" href="#main">
