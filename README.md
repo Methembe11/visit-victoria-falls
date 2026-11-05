@@ -34,15 +34,18 @@ Every variable is optional — the site runs fully without them. Features degrad
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `src/app/layout.js`, `sitemap.js`, `robots.js` | Canonical origin for metadata, sitemap and robots. Defaults to `http://localhost:3000`. Set this in production. |
 | `OPENAI_API_KEY` | `src/app/api/plan/route.js` | Enables AI itinerary generation. Without it, the planner uses a deterministic local generator. |
-| `OPENAI_MODEL` | `src/app/api/plan/route.js` | Model name. Defaults to `gpt-4o-mini`. |
-| `STUDIO_KEY` | `src/app/studio/page.js` | Enables the analytics dashboard at `/studio?key=…`. Unset means the page reports "not configured". |
+| `OPENAI_MODEL` | `src/app/api/plan/route.js` | Trip planner model. Defaults to `gpt-4o-mini`. |
+| `OPENAI_WEB_SEARCH_MODEL` | `src/app/api/concierge/route.js` | Concierge Responses API model. Defaults to `gpt-5.5`. |
+| `SUPABASE_URL` | Server-side Supabase client | Project URL for private enquiry, analytics and optional conversation storage. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-side Supabase client | Private server-only key. Never expose it with a `NEXT_PUBLIC_` prefix. |
+| `STUDIO_KEY` | `src/app/studio/page.js` | Protects the analytics dashboard at `/studio?key=…`. |
 
 ## Project structure
 
 ```
 src/
 ├─ app/
-│  ├─ layout.js                 Root layout: fonts, metadata, header, footer
+│  ├─ layout.js                 Root layout: Instrument Serif + Manrope, metadata, header, footer
 │  ├─ page.js                   Home page
 │  ├─ globals.css               The entire design system (tokens + components)
 │  ├─ <section>/                Index pages: things-to-do, places-to-stay, restaurants,
@@ -52,13 +55,16 @@ src/
 │  │                            guides and interests
 │  ├─ studio/                   Key-protected analytics dashboard (noindex)
 │  ├─ api/
-│  │  ├─ enquiry/route.js       Contact and listing enquiries → .data/enquiries.jsonl
-│  │  ├─ plan/route.js          AI or local itinerary generation
-│  │  └─ track/route.js         Client analytics events → .data/events.jsonl
+│  │  ├─ enquiry/route.js       Validated enquiries → Formspree + private Supabase archive
+│  │  ├─ plan/route.js          OpenAI or deterministic local itinerary generation
+│  │  ├─ concierge/route.js     OpenAI web research or curated local fallback
+│  │  ├─ track/route.js         Client analytics events → private Supabase table
+│  │  └─ referral/route.js      Partner referral submissions
 │  ├─ sitemap.js                Generated from the content collections
 │  └─ robots.js
 ├─ components/                  SiteHeader, SiteFooter, ListingCard, PageHero, HomeTabs,
-│                               Reveal, EnquiryForm, TripPlanner, AnalyticsProvider
+│                               Reveal, EnquiryForm, TripPlanner, AiConcierge, JourneyPathways,
+│                               ReferralPanel, AnalyticsProvider
 ├─ data/site.js                 All content (see below)
 └─ lib/
    ├─ store.js                  Append-only JSONL persistence in .data/
@@ -113,14 +119,12 @@ All three are `POST` only, JSON in, JSON out, and rate limited per IP.
 
 Production enquiries are delivered through Formspree and archived in Supabase. Analytics events are stored in Supabase. The Studio dashboard reads both datasets from Supabase. The legacy JSONL helper remains in the repository but is not used by these production routes.
 
-See [AI integration, analytics and enquiry handling](docs/AI-INTEGRATION-AND-LIMITATIONS.md) for the current implementation, fallback behaviour, limitations, data flow and demonstration guidance.
+See [AI integration, analytics and enquiry handling](docs/AI-INTEGRATION-AND-LIMITATIONS.md) for the implementation and limitations. For submission, see the [production verification report](docs/SUBMISSION-TEST-REPORT.md), [final presentation outline](docs/FINAL-PRESENTATION.md) and [screenshot evidence](docs/evidence/).
 
 ## Conventions
 
-- **No Tailwind, no CSS modules.** One hand-written design system in `src/app/globals.css`,
-  driven by CSS custom properties: `--color-*`, `--font-sans` / `--font-display`, `--text-*`,
-  `--spacing-*`, `--radius*`, `--ease*`. Reuse those tokens rather than adding new values.
-- **Fonts** are Instrument Serif (editorial display) and Manrope (body and interface), loaded with \u0060next/font\u0060 and exposed as \u0060--font-instrument\u0060 / \u0060--font-manrope\u0060.\n  `--font-lato` / `--font-playfair`.
+- **Styling** uses hand-written CSS, CSS Modules for isolated component styles, and shared design tokens in `src/app/globals.css`. There is no Tailwind dependency.
+- **Fonts** are Instrument Serif (editorial display) and Manrope (body and interface), loaded with `next/font/google` and exposed as `--font-instrument` / `--font-manrope`.
 - **JavaScript, not TypeScript.** Path alias `@/*` maps to `src/*` (`jsconfig.json`).
 - **Cards** go through `ListingCard` so image, tag, meta and CTA treatment stay consistent.
 - **Scroll reveals** use `Reveal`, which sets `.js-reveal` on the document and falls back to
@@ -133,12 +137,15 @@ See [AI integration, analytics and enquiry handling](docs/AI-INTEGRATION-AND-LIM
 
 ## Deployment
 
+Production deployment: [https://visit-victoria-falls.vercel.app](https://visit-victoria-falls.vercel.app) (Vercel).
+
 Standard Next.js deployment (Vercel or any Node host):
 
-1. Set `NEXT_PUBLIC_SITE_URL` to the production origin.
-2. Set `STUDIO_KEY` if you want the analytics dashboard.
-3. Set `OPENAI_API_KEY` if you want AI itineraries.
-4. Move enquiries and analytics off the local filesystem — see the note above.
+1. Set `NEXT_PUBLIC_SITE_URL` to `https://visit-victoria-falls.vercel.app`.
+2. Configure `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` for private enquiry and analytics storage.
+3. Set `STUDIO_KEY` to protect the Studio dashboard.
+4. Set `OPENAI_API_KEY`, `OPENAI_MODEL` and `OPENAI_WEB_SEARCH_MODEL` to enable live model responses and concierge web search.
+5. Keep all server secrets in the Vercel project environment settings. Never commit `.env.local`.
 
 Security headers (`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`) and
 `poweredByHeader: false` are configured in `next.config.mjs`.

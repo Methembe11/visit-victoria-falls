@@ -1,4 +1,4 @@
-import { Manrope, Outfit } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import LenisScroll from "@/components/LenisScroll";
@@ -8,13 +8,13 @@ import AiConcierge from "@/components/AiConcierge";
 import { images } from "@/data/site";
 
 /*
- * Brand typography: Outfit for headlines, Manrope for body and interface.
+ * Brand typography: Instrument Serif for editorial display, Manrope for body and interface.
  * Both are open-source Google Fonts, self-hosted by next/font at build time.
  */
-const outfit = Outfit({
-  variable: "--font-outfit",
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "400",
   display: "swap",
 });
 
@@ -87,7 +87,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${manrope.variable} h-full antialiased`}
+      className={`${instrument.variable} ${manrope.variable} h-full antialiased`}
     >
       <body>
         <a className="skip-link" href="#main">
